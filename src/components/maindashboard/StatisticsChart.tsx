@@ -1,0 +1,169 @@
+"use client";
+
+import { ApexOptions } from "apexcharts";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
+import { Loader2 } from "lucide-react";
+import { StatisticsItem } from "@/features/crm/dashboard/types/dashboard.types";
+import { useAffiliateProgress } from "@/features/partner/reports/hooks/reports.hooks";
+
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
+
+type StatisticsChartProps = {
+  selectedSymbol: string;
+};
+
+export default function StatisticsChart({ selectedSymbol }: StatisticsChartProps) {
+  const { data, isLoading } = useAffiliateProgress({
+    symbol: selectedSymbol,
+  });
+
+  const statistics = useMemo<StatisticsItem[]>(() => {
+    return data?.statistics ?? [];
+  }, [data?.statistics]);
+
+  const categories = useMemo(() => {
+    return statistics.map((item) => {
+      const [month, year] = item.month.split("-");
+      return `${month} ${year.slice(-2)}`;
+    });
+  }, [statistics]);
+
+  const revenueSeries = useMemo(() => {
+    return statistics.map((item) => Math.abs(Number(item.profit || 0)));
+  }, [statistics]);
+
+  const options: ApexOptions = {
+    legend: {
+      show: false,
+    },
+    colors: ["#465FFF"],
+
+    chart: {
+      fontFamily: "Outfit, sans-serif",
+      height: 310,
+      type: "area",
+
+      toolbar: {
+        show: false,
+      },
+
+      zoom: {
+        enabled: false,
+      },
+    },
+
+    stroke: {
+      curve: "smooth",
+      width: 3,
+    },
+
+    fill: {
+      type: "gradient",
+
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.45,
+        opacityTo: 0.05,
+        stops: [0, 90, 100],
+      },
+    },
+
+    markers: {
+      size: 4,
+      strokeColors: "#fff",
+      strokeWidth: 2,
+      hover: {
+        size: 6,
+      },
+    },
+
+    grid: {
+      xaxis: {
+        lines: {
+          show: false,
+        },
+      },
+      yaxis: {
+        lines: {
+          show: true,
+        },
+      },
+    },
+
+    dataLabels: {
+      enabled: false,
+    },
+
+    tooltip: {
+      y: {
+        formatter: (val: number) => `Revenue: $${val.toFixed(2)}`,
+      },
+    },
+
+    xaxis: {
+      categories,
+      axisBorder: {
+        show: false,
+      },
+
+      axisTicks: {
+        show: false,
+      },
+    },
+
+    yaxis: {
+      min: 0,
+      max: 1000,
+      tickAmount: 5,
+      labels: {
+        formatter: (val) => `$${Math.round(val)}`,
+      },
+    },
+
+    noData: {
+      text: "No revenue data available",
+      align: "center",
+      verticalAlign: "middle",
+      style: {
+        color: "#6B7280",
+        fontSize: "14px",
+      },
+    },
+  };
+
+  const series = [
+    {
+      name: "Revenue",
+      data: revenueSeries,
+    },
+  ];
+
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white px-5 pt-5 pb-9 sm:px-6 sm:pt-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          Monthly Revenue Trend
+        </h3>
+
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Revenue performance over the last 12 months
+        </p>
+      </div>
+
+      <div className="custom-scrollbar max-w-full">
+        <div className="min-w-[1000px] xl:min-w-full">
+          {isLoading ? (
+            <div className="flex h-[310px] items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+            </div>
+          ) : (
+            <ReactApexChart options={options} series={series} type="area" height={310} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

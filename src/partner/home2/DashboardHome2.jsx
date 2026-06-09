@@ -1,0 +1,45 @@
+"use client";
+
+import CommissionCard from "./CommissionCard";
+import AffiliateProgress from "./AffiliateProgress";
+import PieChartComponent from "./affiliateprogress/PieChartComponent";
+import { usePartnerDashboard } from "@/features/partner/dashboard/hooks/dashboard.hooks";
+import LoayaltyTiers from "./LoyaltyTiers";
+
+export default function DashboardHome2() {
+  const { data, isLoading } = usePartnerDashboard();
+
+  return (
+    <div className="space-y-10">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+        <div className="md:col-span-3">
+          <CommissionCard amount={data?.total_ib_commission} />
+        </div>
+        <div className="md:col-span-6">
+          <AffiliateProgress
+            progress={88}
+            referrals={84}
+            clicks={1203}
+            rate={7}
+            inviteLink="https://ntapi.novotrend.co/member/sign-up"
+            data={data}
+            isLoading={isLoading}
+          />
+        </div>
+        <div className="md:col-span-3">
+          <div className="space-y-6 rounded-2xl border bg-white p-6 shadow-sm">
+            <PieChartComponent
+              totalLots={data?.royaltyinfo?.total_lots}
+              activeLevel={data?.active_clients}
+              // totalLots={15}
+              // activeLevel={20}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Qualification Levels */}
+      <LoayaltyTiers data={data} isLoading={isLoading} />
+    </div>
+  );
+}
