@@ -62,6 +62,7 @@ export interface Transaction {
   remark?: string;
   withdrawType?: string;
   from?: string;
+  amount?: string;
   to?: string;
   status?: string;
 }
