@@ -17,8 +17,6 @@ export default function PremiumPieChart({ totalLots = 0, activeLevel = 0 }: Prem
   const isNoData = tradingLots === 0 && activeClients === 0;
   const series = isNoData ? [1] : [tradingLots, activeClients];
 
-  // console.log("activeClients", activeClients)
-
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "pie",
@@ -28,7 +26,6 @@ export default function PremiumPieChart({ totalLots = 0, activeLevel = 0 }: Prem
     },
 
     labels: isNoData ? ["No Data"] : ["Trading Lots", "Active Client"],
-
     colors: isNoData ? ["#E5E7EB"] : ["#0088FE", "#00C49F"],
 
     legend: {

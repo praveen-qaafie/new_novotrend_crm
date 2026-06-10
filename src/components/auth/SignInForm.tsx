@@ -1,6 +1,6 @@
 "use client";
 
-import Checkbox from "@/components/form/input/Checkbox";
+// import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
@@ -15,7 +15,7 @@ import FormMessage from "@/common/UI/FormMessage";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  // const [isChecked, setIsChecked] = useState(false);
 
   const { mutate: login, isPending, message } = useLogin();
 
@@ -85,27 +85,11 @@ export default function SignInForm() {
                 )}
               </div>
 
-              {/* {message && (
-                <p
-                  className={`rounded-lg px-4 py-2.5 text-sm ${
-                    message.type === "error"
-                      ? "bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400"
-                      : "bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-success-400"
-                  }`}
-                >
-                  {message.text}
-                </p>
-              )} */}
-
               <FormMessage message={message} />
 
               {/* Remember me + Forgot */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Checkbox checked={isChecked} onChange={setIsChecked} />
-                  <span className="text-theme-sm block font-normal text-gray-700 dark:text-gray-400">
-                    Keep me logged in
-                  </span>
                 </div>
                 <Link
                   href="/forgot-password"

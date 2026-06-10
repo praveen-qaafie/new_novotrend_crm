@@ -64,7 +64,6 @@ const AllRows = ({ rows }: { rows: Transaction[] }) => (
 );
 
 // Main Component
-
 export default function TransactionHistory() {
   const { data, status, errorMessage, fetchData } = useTransactionHistory();
   const { mt5Accounts, isLoading: accountsLoading } = useMT5Accounts();
@@ -166,7 +165,7 @@ export default function TransactionHistory() {
         <div>
           <h2 className="text-2xl font-semibold dark:text-white">Transaction History</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Your deposits and withdrawals will appear here.
+            Your deposits and withdrawals will appear here. 
           </p>
         </div>
 

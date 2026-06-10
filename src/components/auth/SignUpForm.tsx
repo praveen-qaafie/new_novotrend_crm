@@ -70,7 +70,11 @@ export default function SignUpForm() {
                   type="text"
                   placeholder="Enter your first name"
                   {...formRegister("first_name")}
+                  onInput={(e) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z\s]/g, "");
+                  }}
                 />
+
                 {errors.first_name && (
                   <p className="text-error-500 mt-1 text-sm">{errors.first_name.message}</p>
                 )}
@@ -83,6 +87,9 @@ export default function SignUpForm() {
                   type="text"
                   placeholder="Enter your last name"
                   {...formRegister("last_name")}
+                  onInput={(e) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z\s]/g, "");
+                  }}
                 />
                 {errors.last_name && (
                   <p className="text-error-500 mt-1 text-sm">{errors.last_name.message}</p>

@@ -9,9 +9,9 @@ const DashboardFooter = () => {
         {/* Disclaimer */}
         <div className="py-10">
           <p className="text-md leading-relaxed text-gray-700 dark:text-gray-300">
-            <b>Regional restrictions:</b> Novotrend.Ltd does not provide services to residents of the
-            United States, Canada, Sudan, Syria and North Korea and the European Economic Area. User
-            personal data is protected. An SSL certificate is also installed on the site, so
+            <b>Regional restrictions:</b> Novotrend.Ltd does not provide services to residents of
+            the United States, Canada, Sudan, Syria and North Korea and the European Economic Area.
+            User personal data is protected. An SSL certificate is also installed on the site, so
             information is transmitted using a secure protocol. The activities of Novotrend.Ltd are
             conducted outside the Russian Federation. Novotrend.co is owned and operated by
             Novotrend Ltd registration number 23835 IBC 2017, Suite 305, Griffith Corporate Center
@@ -35,28 +35,32 @@ const DashboardFooter = () => {
             {/* Links */}
             <div className="flex flex-wrap gap-6 text-sm">
               <a
-                href="/privacy"
+                href="/pdf/PrivacyPolicy.pdf"
+                target="_blank"
                 aria-label="View privacy policy"
                 className="flex items-center gap-1 text-sm text-gray-700 transition hover:text-[#465FFF] dark:text-gray-300"
               >
                 <FaUserShield size={15} /> Privacy Policy
               </a>
               <a
-                href="/risk"
+                href="/pdf/RiskDisclosure.pdf"
+                target="_blank"
                 aria-label="View risk disclosure"
                 className="flex items-center gap-1 text-sm text-gray-700 transition hover:text-[#465FFF] dark:text-gray-300"
               >
                 <FaBalanceScale size={15} /> Risk Disclosure
               </a>
               <a
-                href="/service"
+                href="/pdf/Service Regulations.pdf"
+                target="_blank"
                 aria-label="View service regulations"
                 className="flex items-center gap-1 text-sm text-gray-700 transition hover:text-[#465FFF] dark:text-gray-300"
               >
                 <FaFileContract size={15} /> Service Regulations
               </a>
               <a
-                href="/client-agreement"
+                href="/pdf/Client Agreement.pdf"
+                target="_blank"
                 aria-label="View client agreement"
                 className="flex items-center gap-1 text-sm text-gray-700 transition hover:text-[#465FFF] dark:text-gray-300"
               >

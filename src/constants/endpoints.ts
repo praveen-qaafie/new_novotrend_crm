@@ -62,6 +62,7 @@ export const API_ENDPOINTS = {
     OPEN_SUPPORT_TICKET_DETAILS: "support_ticket/details_open_support_ticket_list.php",
   },
   PARTNER_DASHBOARD: {
+    IB_REGISTER: "register/register_ib.php",
     GET_PARTNER_DASHBOARD: "partner_dashboard/get_partner_dashboard.php",
     GET_REPORT_CLIENTS: "partner_dashboard/get_report_clients.php",
     GET_REPORT_REWARD_HISTORY: "partner_dashboard/get_report_reward_history.php",

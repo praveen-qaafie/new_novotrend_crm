@@ -12,7 +12,6 @@ import { API_ENDPOINTS } from "@/constants/endpoints";
 
 export async function getKyc(): Promise<EkycResponse> {
   const response = await api.post(API_ENDPOINTS.CRM.GET_KYC);
-  console.log("response.data", response); 
   return response.data;
 }
 

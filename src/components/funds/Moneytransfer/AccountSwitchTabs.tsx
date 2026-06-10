@@ -16,7 +16,7 @@ import {
 import { MT5Account, TransferTab } from "@/features/crm/money-transfer/types/money-transfer.types";
 import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
-// ─── Tab config
+// Tab config
 const TABS: { id: TransferTab; label: string }[] = [
   { id: "MT5ToMT5", label: "Transfer Between Accounts" },
   { id: "MT5ToWallet", label: "MT5 to Wallet" },
@@ -49,7 +49,10 @@ export default function AccountSwitchTabs() {
 
   // Shared hooks
   const { mt5Accounts, isLoading: accountsLoading } = useMT5Accounts();
-  const { otpStatus, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+  // const { otpStatus, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+
+  const { otpStatus, otpSentOnce, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+
   const { transferStatus, errorMessage, successMessage, submitTransfer, reset } = useTransfer();
 
   // Local form state
@@ -62,7 +65,8 @@ export default function AccountSwitchTabs() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Derived
-  const isOtpSent = otpStatus === "sent";
+  // const isOtpSent = otpStatus === "sent";
+  const isOtpSent = otpSentOnce;
   const isOtpSending = otpStatus === "sending";
   const isSubmitting = transferStatus === "loading";
   const isSuccess = transferStatus === "success";

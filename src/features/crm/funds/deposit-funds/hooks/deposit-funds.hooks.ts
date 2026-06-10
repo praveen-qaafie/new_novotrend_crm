@@ -41,7 +41,6 @@ export const useDepositFundsAddWalletBalance = () => {
 
     onSuccess: (response) => {
       if (response?.data?.status === 200) {
-        console.log("Deposit successful:", response?.data?.result);
         // toast.success(response?.data?.result || "Deposit successful");
       } else {
         // toast.error(response?.data?.result || "Something went wrong");

@@ -25,12 +25,10 @@ export async function fetchTransactionHistory(
     mt5account,
   });
 
-  console.log(`Raw ${tab} response:`, res.data);
-
   const raw = res.data.data.response;
   if (!raw?.length) return [];
 
-  // ── Normalize each tab's response to unified Transaction shape ──
+  // Normalize each tab's response to unified Transaction shape
   switch (tab) {
     case "All":
       return (raw as AllTransaction[]).map((t, i) => ({

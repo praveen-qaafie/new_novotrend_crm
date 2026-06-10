@@ -36,11 +36,7 @@ function isImageUrl(url: string): boolean {
 export default function SupportChat() {
   const router = useRouter();
   const params = useParams();
-  console.log("params", params); 
-
   const ticketId = (params?.ID as string) ?? null;
-
-  console.log("ticketId==<", ticketId);
 
   const { data: ticketDetails, isLoading } = useSupportDetail(ticketId);
   const submitRemark = useSubmitRemark(ticketId);

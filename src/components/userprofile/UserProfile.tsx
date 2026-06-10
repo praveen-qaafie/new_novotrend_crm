@@ -44,31 +44,6 @@ const documentTypes = [
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_IMAGE_SIZE_MB = 2;
 
-//  PROFILE COMPLETION HELPER
-// function calcProfileCompletion(data: {
-//   first_name?: string;
-//   last_name?: string;
-//   phone?: string;
-//   dob?: string;
-//   bio?: string;
-//   country?: string;
-//   user_img?: string;
-//   kycStatus?: string;
-// }): number {
-//   const fields = [
-//     !!data.first_name,
-//     !!data.last_name,
-//     !!data.phone,
-//     !!data.dob,
-//     !!data.bio,
-//     !!data.country,
-//     !!data.user_img,
-//     data.kycStatus === "approved",
-//   ];
-//   const filled = fields.filter(Boolean).length;
-//   return Math.round((filled / fields.length) * 100);
-// }
-
 function calcProfileCompletion(data: {
   first_name?: string;
   last_name?: string;
@@ -119,8 +94,6 @@ const UserProfile = () => {
   const { kycData, kycStatus, isLoading: kycLoading } = useGetKyc();
   const { mutate: submitKyc, isPending, message: kycMessage } = useSubmitEkyc();
   const { profileData, isLoading: profileLoading } = useGetUserProfile();
-
-  // console.log(kycData?.map((item) => item.kyc_status));
 
   const status = kycData?.[0]?.kyc_status || "";
   const kyc = kycData?.[0];
@@ -638,7 +611,7 @@ const UserProfile = () => {
                     </h3>
 
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      Please upload your KYC documents. Supported formats: PDF, JPG, PNG.
+                      Please upload your KYC documents. Supported formats: PDF, JPG, JPEG, PNG.
                     </p>
                   </div>
 
@@ -778,26 +751,28 @@ const UserProfile = () => {
                 <div className="grid grid-cols-1 gap-6">
                   {/* Current Password */}
                   <div className="space-y-1">
-                    <Label className="text-[14px] font-medium text-gray-700 dark:text-gray-300">
-                      Current Password <span className="text-red-500">*</span>
-                    </Label>
-                    <div className="group relative">
+                    <Label>Current Password</Label>
+
+                    <div className="relative">
                       <Input
                         {...register("current_password")}
                         placeholder="Enter current password"
                         type={CurrentshowPassword ? "text" : "password"}
-                        className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pr-12 focus:ring-2 focus:ring-indigo-400 dark:border-gray-700 dark:bg-slate-800"
+                        className="pr-12"
                       />
-                      {errors.current_password && (
-                        <p className="text-sm text-red-500">{errors.current_password.message}</p>
-                      )}
-                      <span
+
+                      <button
+                        type="button"
                         onClick={() => setCurrentShowPassword(!CurrentshowPassword)}
-                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer opacity-70 group-hover:opacity-100 dark:text-white"
+                        className="absolute top-1/2 right-4 -translate-y-1/2"
                       >
                         {CurrentshowPassword ? <EyeIcon /> : <EyeCloseIcon />}
-                      </span>
+                      </button>
                     </div>
+
+                    {errors.current_password && (
+                      <p className="text-sm text-red-500">{errors.current_password.message}</p>
+                    )}
                   </div>
 
                   {/* New Password */}
@@ -805,23 +780,28 @@ const UserProfile = () => {
                     <Label className="text-[14px] font-medium text-gray-700 dark:text-gray-300">
                       New Password <span className="text-red-500">*</span>
                     </Label>
-                    <div className="group relative">
+
+                    <div className="relative">
                       <Input
                         {...register("new_password")}
                         placeholder="Enter new password"
                         type={NewshowPassword ? "text" : "password"}
                         className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pr-12 focus:ring-2 focus:ring-indigo-400 dark:border-gray-700 dark:bg-slate-800"
                       />
-                      {errors.new_password && (
-                        <p className="text-sm text-red-500">{errors.new_password.message}</p>
-                      )}
-                      <span
+
+                      <button
+                        type="button"
                         onClick={() => setNewShowPassword(!NewshowPassword)}
-                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer opacity-70 group-hover:opacity-100 dark:text-white"
+                        className="absolute inset-y-0 right-4 flex items-center opacity-70 hover:opacity-100 dark:text-white"
                       >
                         {NewshowPassword ? <EyeIcon /> : <EyeCloseIcon />}
-                      </span>
+                      </button>
                     </div>
+
+                    {errors.new_password && (
+                      <p className="text-sm text-red-500">{errors.new_password.message}</p>
+                    )}
+
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       Use 8+ characters with a mix of letters, numbers & symbols
                     </p>
@@ -832,24 +812,28 @@ const UserProfile = () => {
                     <Label className="text-[14px] font-medium text-gray-700 dark:text-gray-300">
                       Confirm Password <span className="text-red-500">*</span>
                     </Label>
-                    <div className="group relative">
+
+                    <div className="relative">
                       <Input
                         {...register("confirm_password")}
                         placeholder="Re-enter new password"
                         type={ConfirmshowPassword ? "text" : "password"}
                         className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pr-12 focus:ring-2 focus:ring-indigo-400 dark:border-gray-700 dark:bg-slate-800"
                       />
-                      <br />
-                      {errors.confirm_password && (
-                        <p className="text-sm text-red-500">{errors.confirm_password.message}</p>
-                      )}
-                      <span
+
+                      <button
+                        type="button"
                         onClick={() => setConfirmShowPassword(!ConfirmshowPassword)}
-                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer opacity-70 group-hover:opacity-100 dark:text-white"
+                        className="absolute inset-y-0 right-4 flex items-center opacity-70 hover:opacity-100 dark:text-white"
                       >
                         {ConfirmshowPassword ? <EyeIcon /> : <EyeCloseIcon />}
-                      </span>
+                      </button>
                     </div>
+
+                    {errors.confirm_password && (
+                      <p className="text-sm text-red-500">{errors.confirm_password.message}</p>
+                    )}
+                    <br />
                     {passwordMessage && <FormMessage message={passwordMessage} />}
                   </div>
                 </div>

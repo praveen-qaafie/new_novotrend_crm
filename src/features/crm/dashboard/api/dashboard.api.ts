@@ -40,8 +40,5 @@ export async function fetchAffiliateProgress(
       response: AffiliateProgressResponse;
     };
   }>(API_ENDPOINTS.CRM.DASHBOARD_GRAPH, cleanedPayload);
-
-  console.log("res<===", res); 
-
   return res.data.data.response;
 }

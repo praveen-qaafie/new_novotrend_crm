@@ -16,10 +16,7 @@ const WithdrawTable = ({ rows }: { rows: Transaction[] }) => (
         >
           <td className="px-4 py-3">{index + 1}</td>
           <td className="px-4 py-3 whitespace-nowrap">{t.date}</td>
-          <td className="px-4 py-3">{t.details ?? "-"}</td>
-          <td className="px-4 py-3">-</td>
-          <td className="px-4 py-3">{t.debit?.toFixed(2) ?? "-"}</td>
-          <td className="px-4 py-3">{t.balance?.toFixed(2) ?? "-"}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{t.status}</td>
           <td className="px-4 py-3">{t.withdrawType ?? "-"}</td>
           <td className="px-4 py-3">{t.remark ?? "-"}</td>
         </tr>

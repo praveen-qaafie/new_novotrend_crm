@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "quickchart.io",
       },
+      {
+        protocol: "https",
+        hostname: "ntapi.novotrend.co",
+      },
     ],
   },
 

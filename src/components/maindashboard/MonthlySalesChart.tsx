@@ -222,7 +222,7 @@ export default function MonthlySalesChart({
               <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
             </div>
           ) : (
-            <ReactApexChart options={options} series={series} type="bar" height={360} />
+            <ReactApexChart options={options} series={series} type="bar" height={354} />
           )}
         </div>
       </div>

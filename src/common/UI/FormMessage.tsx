@@ -1,5 +1,5 @@
 import { CheckCircle, XCircle, Info } from "lucide-react";
-
+import { useEffect, useState } from "react";
 interface FormMessageProps {
   message: {
     type: "success" | "error" | "info";
@@ -7,8 +7,28 @@ interface FormMessageProps {
   } | null;
 }
 
+const DISMISS_DURATION = {
+  success: 3000,
+  info: 3000,
+  error: 5000,
+};
+
 export default function FormMessage({ message }: FormMessageProps) {
-  if (!message) return null;
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!message) return;
+
+    setVisible(true);
+
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, DISMISS_DURATION[message.type]);
+
+    return () => clearTimeout(timer);
+  }, [message]);
+
+  if (!message || !visible) return null;
 
   const config = {
     success: {
@@ -31,7 +51,9 @@ export default function FormMessage({ message }: FormMessageProps) {
   const { wrapper, text, icon } = config[message.type];
 
   return (
-    <div className={`flex items-center gap-3 rounded-lg border-l-4 px-4 py-2.5 ${wrapper}`}>
+    <div
+      className={`flex items-center gap-3 rounded-lg border-l-4 px-4 py-2.5 transition-opacity duration-500 ${wrapper}`}
+    >
       {icon}
       <p className={`text-sm ${text}`}>{message.text}</p>
     </div>

@@ -66,6 +66,7 @@ import { PiChartPolar } from "react-icons/pi";
 import { PiChartLineUpBold } from "react-icons/pi";
 import { PiPercentBold } from "react-icons/pi";
 import { PiChartPieSliceBold } from "react-icons/pi";
+import { FaUserGroup } from "react-icons/fa6";
 
 
 export {
@@ -122,6 +123,7 @@ export {
   HorizontaLDots,
   ChevronUpIcon,
   ChatIcon,
+  FaUserGroup,
   FaUserPlus,
   FaSackDollar,
   FaClock,

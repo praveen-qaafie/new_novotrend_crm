@@ -23,9 +23,7 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
               Deposit
             </span>
           </td>
-          <td className="px-4 py-3">{t.credit?.toFixed(2) ?? "-"}</td>
-          <td className="px-4 py-3">-</td>
-          <td className="px-4 py-3">{t.balance?.toFixed(2) ?? "-"}</td>
+
           <td className="px-4 py-3">
             {t.receipt ? (
               <Image
@@ -41,6 +39,7 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
             )}
           </td>
           <td className="px-4 py-3">{t.note ?? "-"}</td>
+          <td className="px-4 py-3">{t.status ?? "-"}</td>
           <td className="px-4 py-3">{t.remark ?? "-"}</td>
         </tr>
       ))

@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,59 +21,35 @@ import {
   PiChartPieSliceBold,
   PiChartPolar,
   PiPercentBold,
-} from "../icons/index";
+  FaUserGroup,
+} from "../icons";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: {
+    name: string;
+    path: string;
+    pro?: boolean;
+    new?: boolean;
+  }[];
   target?: string;
+  action?: "OPEN_PARTNER_MODAL";
 };
 
-/* USER MENU */
-const userMenu: NavItem[] = [
-  { icon: <FaHouseChimney size={20} />, name: "Dashboard", path: "/" },
-  { icon: <FaUserPlus size={20} />, name: "Account", path: "/account" },
-  {
-    name: "Funds",
-    icon: <FaSackDollar size={20} />,
-    subItems: [
-      { name: "Deposit Funds", path: "/deposit" },
-      { name: "Withdraw Funds", path: "/withdraws" },
-      { name: "Add Bank Account", path: "/newaccount" },
-    ],
-  },
-  { icon: <FaMoneyBillTransfer size={20} />, name: "Money transfer", path: "/transfer" },
-  { icon: <FaClock size={20} />, name: "Transaction History", path: "/transaction-history" },
-  { icon: <PiChartBar size={20} />, name: "Trading History", path: "/trading-history" },
-  { icon: <PiChartPolar size={20} />, name: "Trading platform", path: "/trading-platform" },
-  {
-    icon: <FaArrowTrendUp size={20} />,
-    name: "Social Trading",
-    path: "https://socialtrading.novotrend.co:8085/portal/",
-    target: "_blank",
-  },
-  {
-    icon: <FaHeadset size={20} />,
-    name: "Team Support",
-    subItems: [
-      { name: "Query Support", path: "/support/query", pro: false },
-      { name: "Chat Support", path: "/support/chat-support", pro: false },
-      { name: "All Query", path: "/support/querystatus", pro: false },
-    ],
-  },
-
-  {
-    icon: <FaUserPen size={20} />,
-    name: "Profile",
-    subItems: [{ name: "Personal Profile", path: "/user-profile", pro: false }],
-  },
-];
+interface AppSidebarProps {
+  isIB: number | string;
+  onBecomePartnerClick?: () => void;
+}
 
 /* PARTNER MENU */
 const partnerMenu: NavItem[] = [
-  { icon: <FaHouseChimney size={20} />, name: "Dashboard", path: "/partners/partner" },
+  {
+    icon: <FaHouseChimney size={20} />,
+    name: "Dashboard",
+    path: "/partners/partner",
+  },
   {
     icon: <PiChartLineUpBold size={20} />,
     name: "Reports",
@@ -100,107 +77,225 @@ const partnerMenu: NavItem[] = [
   },
 ];
 
-const AppSidebar: React.FC = () => {
+const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+
   const pathname = usePathname();
 
-  // Determine role based on current route
+  /* USER MENU */
+  const userMenu: NavItem[] = [
+    {
+      icon: <FaHouseChimney size={20} />,
+      name: "Dashboard",
+      path: "/",
+    },
+    {
+      icon: <FaUserPlus size={20} />,
+      name: "Account",
+      path: "/account",
+    },
+    {
+      name: "Funds",
+      icon: <FaSackDollar size={20} />,
+      subItems: [
+        { name: "Deposit Funds", path: "/deposit" },
+        { name: "Withdraw Funds", path: "/withdraws" },
+        { name: "Add Bank Account", path: "/newaccount" },
+      ],
+    },
+    {
+      icon: <FaMoneyBillTransfer size={20} />,
+      name: "Money Transfer",
+      path: "/transfer",
+    },
+    {
+      icon: <FaClock size={20} />,
+      name: "Transaction History",
+      path: "/transaction-history",
+    },
+    {
+      icon: <PiChartBar size={20} />,
+      name: "Trading History",
+      path: "/trading-history",
+    },
+    {
+      icon: <PiChartPolar size={20} />,
+      name: "Trading Platforms",
+      path: "/trading-platform",
+    },
+    {
+      icon: <FaArrowTrendUp size={20} />,
+      name: "Social Trading",
+      path: "https://socialtrading.novotrend.co:8085/portal/",
+      target: "_blank",
+    },
+    {
+      icon: <FaHeadset size={20} />,
+      name: "Team Support",
+      subItems: [
+        { name: "Query Support", path: "/support/query" },
+        { name: "Chat Support", path: "/support/chat-support" },
+        { name: "All Query", path: "/support/querystatus" },
+      ],
+    },
+    {
+      icon: <FaUserPen size={20} />,
+      name: "Profile",
+      subItems: [
+        {
+          name: "Personal Profile",
+          path: "/user-profile",
+        },
+      ],
+    },
+    ...(Number(isIB) === 0
+      ? [
+          {
+            icon: <FaUserGroup size={20} />,
+            name: "Become A Partner",
+            action: "OPEN_PARTNER_MODAL",
+          } as NavItem,
+        ]
+      : []),
+  ];
+
   const role: "user" | "partner" = pathname.startsWith("/partners") ? "partner" : "user";
+
   const menuToRender = role === "partner" ? partnerMenu : userMenu;
 
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
 
   /* SUBMENU LOGIC */
-  const [openSubmenu, setOpenSubmenu] = useState<{ index: number } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
-  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [openSubmenu, setOpenSubmenu] = useState<{
+    index: number;
+  } | null>(null);
 
-  const handleSubmenuToggle = (index: number) =>
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<number, number>>({});
+
+  const subMenuRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  const handleSubmenuToggle = (index: number) => {
     setOpenSubmenu((prev) => (prev?.index === index ? null : { index }));
+  };
 
   useEffect(() => {
     if (openSubmenu !== null) {
-      const key = `${openSubmenu.index}`;
-      const el = subMenuRefs.current[key];
-      if (el) setSubMenuHeight((prev) => ({ ...prev, [key]: el.scrollHeight }));
+      const el = subMenuRefs.current[openSubmenu.index];
+
+      if (el) {
+        setSubMenuHeight((prev) => ({
+          ...prev,
+          [openSubmenu.index]: el.scrollHeight,
+        }));
+      }
     }
   }, [openSubmenu]);
 
   useEffect(() => {
+    let foundIndex: number | null = null;
     menuToRender.forEach((nav, index) => {
-      nav.subItems?.forEach((s) => {
-        if (isActive(s.path)) setOpenSubmenu({ index });
-      });
+      const match = nav.subItems?.some((sub) => isActive(sub.path));
+
+      if (match) {
+        foundIndex = index;
+      }
     });
-  }, [pathname, menuToRender, isActive]);
+
+    if (foundIndex === null) return;
+
+    setOpenSubmenu((prev) => (prev?.index === foundIndex ? prev : { index: foundIndex! }));
+    // setOpenSubmenu((prev) => (prev?.index === foundIndex ? prev : { index: foundIndex }));
+  }, [pathname]);
 
   const renderMenu = (items: NavItem[]) => (
     <ul className="flex flex-col gap-4">
-      {items.map((nav, index) => (
-        <li key={nav.name}>
-          {nav.subItems ? (
-            <button
-              onClick={() => handleSubmenuToggle(index)}
-              className={`menu-item group ${openSubmenu?.index === index ? "menu-item-active" : "menu-item-inactive"}`}
-              type="button"
-            >
-              <span>{nav.icon}</span>
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text">{nav.name}</span>
-              )}
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <ChevronDownIcon
-                  className={`ml-auto h-5 w-5 transition-transform ${openSubmenu?.index === index ? "rotate-180" : ""}`}
-                />
-              )}
-            </button>
-          ) : nav.path ? (
-            <Link
-              href={nav.path}
-              target={nav.target}
-              className={`menu-item ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
-            >
-              <span>{nav.icon}</span>
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text">{nav.name}</span>
-              )}
-            </Link>
-          ) : null}
+      {items.map((nav, index) => {
+        const hasActiveChild = nav.subItems?.some((sub) => isActive(sub.path)) ?? false;
 
-          {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
-            <div
-              ref={(el) => {
-                subMenuRefs.current[index] = el;
-              }}
-              className="overflow-hidden transition-all duration-300"
-              style={{
-                height: openSubmenu?.index === index ? `${subMenuHeight[index] || 0}px` : "0px",
-              }}
-            >
-              <ul className="mt-2 ml-9 space-y-1">
-                {nav.subItems.map((sub) => (
-                  <li key={sub.name}>
-                    <Link
-                      href={sub.path}
-                      className={`menu-dropdown-item ${isActive(sub.path) ? "menu-dropdown-item-active" : "menu-dropdown-item-inactive"}`}
-                    >
-                      {sub.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </li>
-      ))}
+        return (
+          <li key={nav.name}>
+            {nav.action === "OPEN_PARTNER_MODAL" ? (
+              <button onClick={onBecomePartnerClick} className="menu-item menu-item-inactive">
+                <span>{nav.icon}</span>
+                {(isExpanded || isHovered || isMobileOpen) && (
+                  <span className="menu-item-text">{nav.name}</span>
+                )}
+              </button>
+            ) : nav.subItems ? (
+              <button
+                onClick={() => handleSubmenuToggle(index)}
+                className={`menu-item group ${
+                  openSubmenu?.index === index || hasActiveChild // ✅ bas ye add karo
+                    ? "menu-item-active"
+                    : "menu-item-inactive"
+                }`}
+                type="button"
+              >
+                <span>{nav.icon}</span>
+                {(isExpanded || isHovered || isMobileOpen) && (
+                  <span className="menu-item-text">{nav.name}</span>
+                )}
+                <ChevronDownIcon />
+              </button>
+            ) : nav.path ? (
+              <Link
+                href={nav.path}
+                className={`menu-item ${
+                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+                }`}
+              >
+                <span>{nav.icon}</span>
+                {(isExpanded || isHovered || isMobileOpen) && (
+                  <span className="menu-item-text">{nav.name}</span>
+                )}
+              </Link>
+            ) : null}
+
+            {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
+              <div
+                ref={(el) => {
+                  subMenuRefs.current[index] = el;
+                }}
+                className="overflow-hidden transition-all duration-300"
+                style={{
+                  height: openSubmenu?.index === index ? `${subMenuHeight[index] || 0}px` : "0px",
+                }}
+              >
+                <ul className="mt-2 ml-9 space-y-1">
+                  {nav.subItems.map((sub) => (
+                    <li key={sub.name}>
+                      <Link
+                        href={sub.path}
+                        className={`menu-dropdown-item ${
+                          isActive(sub.path)
+                            ? "menu-dropdown-item-active"
+                            : "menu-dropdown-item-inactive"
+                        }`}
+                      >
+                        {sub.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-50 mt-16 flex h-screen flex-col border-r bg-white px-5 transition-all duration-300 lg:mt-0 dark:bg-gray-900 ${isExpanded || isMobileOpen || isHovered ? "w-[290px]" : "w-[90px]"} ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+      className={`fixed top-0 left-0 z-50 mt-16 flex h-screen flex-col border-r bg-white px-5 transition-all duration-300 lg:mt-0 dark:bg-gray-900 ${
+        isExpanded || isMobileOpen || isHovered ? "w-[290px]" : "w-[90px]"
+      } ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        if (!isExpanded) {
+          setIsHovered(false);
+        }
+      }}
     >
       {/* LOGO */}
       <div className="py-8">
@@ -214,6 +309,7 @@ const AppSidebar: React.FC = () => {
                 width={231}
                 height={66}
               />
+
               <Image
                 className="hidden dark:block"
                 src="/images/logo/lightmode.png"
@@ -234,9 +330,9 @@ const AppSidebar: React.FC = () => {
           <h2 className="mb-4 text-xs text-gray-400 uppercase">
             {isExpanded || isHovered || isMobileOpen ? "" : <HorizontaLDots />}
           </h2>
+
           {renderMenu(menuToRender)}
         </nav>
-        {(isExpanded || isHovered || isMobileOpen) && ""}
       </div>
     </aside>
   );
