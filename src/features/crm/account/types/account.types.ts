@@ -45,6 +45,7 @@ export interface ChangePasswordPayload {
   passwordtype: "main" | "investor" | "both";
   mt5id: string;
   mainPasswordStatus?: string | number;
+  can_change_password?: string | number;
   mainpassword?: string;
   investorpassword?: string;
 }

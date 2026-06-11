@@ -1,3 +1,269 @@
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { motion } from "framer-motion";
+// import { Eye, EyeOff } from "lucide-react";
+// import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import {
+//   ChangePasswordFormData,
+//   changePasswordSchema,
+//   UpdateNicknameFormData,
+//   updateNicknameSchema,
+// } from "@/features/crm/account/schemas/account.schemas";
+// import { useChangePassword, useUpdateNickname } from "@/features/crm/account/hooks/account.hooks";
+// import FormMessage from "@/common/UI/FormMessage";
+
+// interface AccountModalProps {
+//   type: "password" | "nickname" | null;
+//   onClose: () => void;
+//   mt5id: string;
+//   nickname?: string;
+// }
+
+// export default function AccountModal({ type, onClose, mt5id, nickname }: AccountModalProps) {
+//   const [passwordType, setPasswordType] = useState<"main" | "investor" | "both">("main");
+//   const [showMainPass, setShowMainPass] = useState(false);
+//   const [showInvestorPass, setShowInvestorPass] = useState(false);
+
+//   const { mutate: changePwd, isPending: pwdPending, message: pwdMessage } = useChangePassword();
+//   const { mutate: updateNick, isPending: nickPending, message: nickMessage } = useUpdateNickname();
+
+//   // Password form
+//   const {
+//     register: pwdRegister,
+//     handleSubmit: handlePwdSubmit,
+//     reset: resetPwd,
+//     formState: { errors: pwdErrors },
+//   } = useForm<ChangePasswordFormData>({
+//     resolver: zodResolver(changePasswordSchema),
+//     defaultValues: { passwordtype: "main" },
+//   });
+
+//   // Nickname form
+//   const {
+//     register: nickRegister,
+//     handleSubmit: handleNickSubmit,
+//     reset: resetNick,
+//     formState: { errors: nickErrors },
+//   } = useForm<UpdateNicknameFormData>({
+//     resolver: zodResolver(updateNicknameSchema),
+//     defaultValues: { nickname: nickname ?? "" },
+//   });
+
+//   // Nickname pre-fill
+//   useEffect(() => {
+//     if (type === "nickname" && nickname) {
+//       resetNick({ nickname });
+//     }
+//   }, [type, nickname, resetNick]);
+
+//   const handleClose = () => {
+//     resetPwd();
+//     resetNick();
+//     onClose();
+//   };
+
+//   const onPasswordSubmit = (data: ChangePasswordFormData) => {
+//     changePwd(
+//       {
+//         passwordtype: data.passwordtype,
+//         mt5id,
+//         mainpassword: data.mainpassword,
+//         investorpassword: data.investorpassword,
+//       },
+//       {
+//         onSuccess: (res) => {
+//           if (res?.data?.status === 200) {
+//             setTimeout(() => handleClose(), 2000);
+//           }
+//         },
+//       }
+//     );
+//   };
+
+//   const onNicknameSubmit = (data: UpdateNicknameFormData) => {
+//     updateNick(
+//       { mt5id, nickname: data.nickname },
+//       {
+//         onSuccess: (res) => {
+//           if (res?.data?.status === 200) {
+//             handleClose();
+//           }
+//         },
+//       }
+//     );
+//   };
+
+//   if (!type) return null;
+
+//   return (
+//     <div className="fixed inset-0 z-[1] flex items-center justify-center bg-gray-400/50 p-4 backdrop-blur-[32px]">
+//       <motion.div
+//         initial={{ opacity: 0, y: 40 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         exit={{ opacity: 0 }}
+//         className="w-full max-w-lg space-y-5 rounded-xl bg-white p-6 shadow-2xl dark:bg-slate-800 dark:text-white"
+//       >
+//         {/* Header */}
+//         <div className="flex items-center justify-between">
+//           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+//             {type === "password" ? "Change Trading Password" : "Update Your Nick Name"}
+//           </h2>
+//           <button
+//             type="button"
+//             onClick={handleClose}
+//             className="text-xl text-gray-500 hover:text-red-500"
+//           >
+//             ✕
+//           </button>
+//         </div>
+
+//         {/* MT5 ID — common */}
+//         <div>
+//           <label className="text-sm font-medium">MT5 ID</label>
+//           <input
+//             type="text"
+//             value={mt5id}
+//             readOnly
+//             className="mt-1 w-full rounded-xl border bg-transparent px-3 py-2 text-gray-500 outline-none"
+//           />
+//         </div>
+
+//         {/* Password Form */}
+//         {type === "password" ? (
+//           <form onSubmit={handlePwdSubmit(onPasswordSubmit)} className="space-y-4">
+//             <div>
+//               <label className="text-sm font-medium">Password Type</label>
+//               <select
+//                 value={passwordType}
+//                 {...pwdRegister("passwordtype", {
+//                   onChange: (e) => {
+//                     const val = e.target.value as "main" | "investor" | "both";
+//                     setPasswordType(val);
+//                   },
+//                 })}
+//                 className="mt-1 w-full rounded-xl border bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+//               >
+//                 <option value="main">Main</option>
+//                 <option value="investor">Investor</option>
+//                 {/* <option value="both">Both</option>  */}
+//               </select>
+//             </div>
+
+//             {/* Main Password */}
+//             {(passwordType === "main" || passwordType === "both") && (
+//               <div>
+//                 <label className="text-sm font-medium">Main Password</label>
+//                 <div className="relative mt-1">
+//                   <input
+//                     type={showMainPass ? "text" : "password"}
+//                     placeholder="Enter main password"
+//                     {...pwdRegister("mainpassword")}
+//                     className="w-full rounded-xl border bg-transparent px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-indigo-500"
+//                   />
+//                   <button
+//                     type="button"
+//                     onClick={() => setShowMainPass((p) => !p)}
+//                     className="absolute top-2.5 right-3 text-gray-500"
+//                   >
+//                     {showMainPass ? <Eye size={18} /> : <EyeOff size={18} />}
+//                   </button>
+//                 </div>
+//                 {pwdErrors.mainpassword && (
+//                   <p className="text-error-500 mt-1 text-xs">{pwdErrors.mainpassword.message}</p>
+//                 )}
+//               </div>
+//             )}
+
+//             {/* Investor Password */}
+//             {(passwordType === "investor" || passwordType === "both") && (
+//               <div>
+//                 <label className="text-sm font-medium">Investor Password</label>
+//                 <div className="relative mt-1">
+//                   <input
+//                     type={showInvestorPass ? "text" : "password"}
+//                     placeholder="Enter investor password"
+//                     {...pwdRegister("investorpassword")}
+//                     className="w-full rounded-xl border bg-transparent px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-indigo-500"
+//                   />
+//                   <button
+//                     type="button"
+//                     onClick={() => setShowInvestorPass((p) => !p)}
+//                     className="absolute top-2.5 right-3 text-gray-500"
+//                   >
+//                     {showInvestorPass ? <Eye size={18} /> : <EyeOff size={18} />}
+//                   </button>
+//                 </div>
+//                 {pwdErrors.investorpassword && (
+//                   <p className="text-error-500 mt-1 text-xs">
+//                     {pwdErrors.investorpassword.message}
+//                   </p>
+//                 )}
+//               </div>
+//             )}
+
+//             {pwdMessage && <FormMessage message={pwdMessage} />}
+
+//             <div className="flex justify-end gap-2 pt-2">
+//               <button
+//                 type="button"
+//                 onClick={handleClose}
+//                 className="rounded-xl border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5"
+//               >
+//                 Close
+//               </button>
+//               <motion.button
+//                 whileTap={{ scale: 0.97 }}
+//                 type="submit"
+//                 disabled={pwdPending}
+//                 className="rounded-xl bg-[#465FFF] px-4 py-2 text-sm font-medium text-white hover:bg-[#3245ea] disabled:opacity-70"
+//               >
+//                 {pwdPending ? "Updating..." : "Update Password"}
+//               </motion.button>
+//             </div>
+//           </form>
+//         ) : (
+//           /* Nickname Form */
+//           <form onSubmit={handleNickSubmit(onNicknameSubmit)} className="space-y-4">
+//             <div>
+//               <label className="text-sm font-medium">Nick Name</label>
+//               <input
+//                 type="text"
+//                 placeholder="Enter nick name"
+//                 {...nickRegister("nickname")}
+//                 className="mt-1 w-full rounded-xl border bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+//               />
+//               {nickErrors.nickname && (
+//                 <p className="text-error-500 mt-1 text-xs">{nickErrors.nickname.message}</p>
+//               )}
+//             </div>
+
+//             {nickMessage && <FormMessage message={nickMessage} />}
+
+//             <div className="flex justify-end gap-2 pt-2">
+//               <button
+//                 type="button"
+//                 onClick={handleClose}
+//                 className="rounded-xl border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5"
+//               >
+//                 Close
+//               </button>
+//               <motion.button
+//                 whileTap={{ scale: 0.97 }}
+//                 type="submit"
+//                 disabled={nickPending}
+//                 className="rounded-xl bg-[#465FFF] px-4 py-2 text-sm font-medium text-white hover:bg-[#3245ea] disabled:opacity-70"
+//               >
+//                 {nickPending ? "Saving..." : "Save Nick Name"}
+//               </motion.button>
+//             </div>
+//           </form>
+//         )}
+//       </motion.div>
+//     </div>
+//   );
+// }
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -12,21 +278,57 @@ import {
 } from "@/features/crm/account/schemas/account.schemas";
 import { useChangePassword, useUpdateNickname } from "@/features/crm/account/hooks/account.hooks";
 import FormMessage from "@/common/UI/FormMessage";
+import { useDashboardStats } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
 interface AccountModalProps {
   type: "password" | "nickname" | null;
   onClose: () => void;
   mt5id: string;
   nickname?: string;
+  mainPasswordStatus?: string | number;
 }
 
 export default function AccountModal({ type, onClose, mt5id, nickname }: AccountModalProps) {
+  const { user } = useDashboardStats();
+
+  const currentAccount = user?.mt5accounts?.find((item) => String(item?.accno) === String(mt5id));
+
+  const mainPasswordStatus = currentAccount?.main_password_status;
+  console.log("user", user);
+
+  const [visible, setVisible] = useState(false);
+
   const [passwordType, setPasswordType] = useState<"main" | "investor" | "both">("main");
   const [showMainPass, setShowMainPass] = useState(false);
   const [showInvestorPass, setShowInvestorPass] = useState(false);
 
-  const { mutate: changePwd, isPending: pwdPending, message: pwdMessage } = useChangePassword();
-  const { mutate: updateNick, isPending: nickPending, message: nickMessage } = useUpdateNickname();
+  // canChangePassword: false hoga jab API response mein can_change_password = false aaye
+  const [canChangePassword, setCanChangePassword] = useState(true);
+
+  // Local message state — FormMessage ko pass karenge
+  const [localMessage, setLocalMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  console.log("localMessage", localMessage?.text);
+
+  useEffect(() => {
+    if (!localMessage?.text) return;
+
+    setVisible(true);
+
+    const fadeTimer = setTimeout(() => setVisible(false), 3000);
+    const removeTimer = setTimeout(() => setLocalMessage(null), 3500);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(removeTimer);
+    };
+  }, [localMessage?.text]);
+
+  const { mutate: changePwd, isPending: pwdPending } = useChangePassword();
+  const { mutate: updateNick, isPending: nickPending } = useUpdateNickname();
 
   // Password form
   const {
@@ -57,13 +359,28 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
     }
   }, [type, nickname, resetNick]);
 
+  // Modal open hone pe state reset
+  useEffect(() => {
+    if (type) {
+      setCanChangePassword(true);
+      setLocalMessage(null);
+    }
+  }, [type]);
+
   const handleClose = () => {
     resetPwd();
     resetNick();
+    setCanChangePassword(true);
+    setLocalMessage(null);
+    setShowMainPass(false);
+    setShowInvestorPass(false);
     onClose();
   };
 
+  const isMainPasswordPending = passwordType === "main" && String(mainPasswordStatus) === "0";
   const onPasswordSubmit = (data: ChangePasswordFormData) => {
+    setLocalMessage(null);
+
     changePwd(
       {
         passwordtype: data.passwordtype,
@@ -73,9 +390,33 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
       },
       {
         onSuccess: (res) => {
-          if (res?.data?.status === 200) {
-            setTimeout(() => handleClose(), 2000);
+          const status = res?.data?.status;
+          const resultMsg: string = res?.data?.result ?? "";
+          const canChange: boolean = Boolean(res?.data?.response?.can_change_password ?? true);
+          setCanChangePassword(canChange);
+
+          if (status === 200) {
+            setLocalMessage({ type: "success", text: resultMsg });
+
+            if (canChange) {
+              resetPwd();
+              setShowMainPass(false);
+              setShowInvestorPass(false);
+              setTimeout(() => handleClose(), 2000);
+            }
+          } else {
+            const errorMsg = resultMsg.includes("Capital")
+              ? "Password must include uppercase, lowercase, numbers, and special characters."
+              : resultMsg || "Failed to change password.";
+
+            setLocalMessage({ type: "error", text: errorMsg });
           }
+        },
+        onError: () => {
+          setLocalMessage({
+            type: "error",
+            text: "Something went wrong. Please try again.",
+          });
         },
       }
     );
@@ -88,7 +429,18 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
         onSuccess: (res) => {
           if (res?.data?.status === 200) {
             handleClose();
+          } else {
+            setLocalMessage({
+              type: "error",
+              text: res?.data?.result || "Failed to update nickname.",
+            });
           }
+        },
+        onError: () => {
+          setLocalMessage({
+            type: "error",
+            text: "Something went wrong!",
+          });
         },
       }
     );
@@ -132,21 +484,21 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
         {/* Password Form */}
         {type === "password" ? (
           <form onSubmit={handlePwdSubmit(onPasswordSubmit)} className="space-y-4">
+            {/* Password Type */}
             <div>
               <label className="text-sm font-medium">Password Type</label>
               <select
                 value={passwordType}
                 {...pwdRegister("passwordtype", {
-                  onChange: (e) => {
-                    const val = e.target.value as "main" | "investor" | "both";
-                    setPasswordType(val);
+                  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
+                    setPasswordType(e.target.value as "main" | "investor" | "both");
                   },
                 })}
                 className="mt-1 w-full rounded-xl border bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="main">Main</option>
                 <option value="investor">Investor</option>
-                {/* <option value="both">Both</option>  */}
+                {/* <option value="both">Both</option> */}
               </select>
             </div>
 
@@ -159,18 +511,21 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
                     type={showMainPass ? "text" : "password"}
                     placeholder="Enter main password"
                     {...pwdRegister("mainpassword")}
-                    className="w-full rounded-xl border bg-transparent px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-indigo-500"
+                    autoComplete="new-password"
+                    disabled={isMainPasswordPending || !canChangePassword}
+                    className="w-full rounded-xl border bg-transparent px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <button
                     type="button"
                     onClick={() => setShowMainPass((p) => !p)}
-                    className="absolute top-2.5 right-3 text-gray-500"
+                    disabled={isMainPasswordPending || !canChangePassword}
+                    className="absolute top-2.5 right-3 text-gray-500 disabled:opacity-50"
                   >
                     {showMainPass ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
                 {pwdErrors.mainpassword && (
-                  <p className="text-error-500 mt-1 text-xs">{pwdErrors.mainpassword.message}</p>
+                  <p className="mt-1 text-xs text-red-500">{pwdErrors.mainpassword.message}</p>
                 )}
               </div>
             )}
@@ -184,25 +539,56 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
                     type={showInvestorPass ? "text" : "password"}
                     placeholder="Enter investor password"
                     {...pwdRegister("investorpassword")}
-                    className="w-full rounded-xl border bg-transparent px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-indigo-500"
+                    autoComplete="new-password"
+                    disabled={!canChangePassword}
+                    className="w-full rounded-xl border bg-transparent px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <button
                     type="button"
                     onClick={() => setShowInvestorPass((p) => !p)}
-                    className="absolute top-2.5 right-3 text-gray-500"
+                    disabled={!canChangePassword}
+                    className="absolute top-2.5 right-3 text-gray-500 disabled:opacity-50"
                   >
                     {showInvestorPass ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
                 {pwdErrors.investorpassword && (
-                  <p className="text-error-500 mt-1 text-xs">
-                    {pwdErrors.investorpassword.message}
-                  </p>
+                  <p className="mt-1 text-xs text-red-500">{pwdErrors.investorpassword.message}</p>
                 )}
               </div>
             )}
 
-            {pwdMessage && <FormMessage message={pwdMessage} />}
+            {/* Pending approval warning — mainPasswordStatus === "0" */}
+            {isMainPasswordPending && (
+              <div className="rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-700 shadow-sm">
+                A Main Password change request is already pending admin approval. You cannot submit
+                another request until the current request has been approved.
+              </div>
+            )}
+
+            {/* API response message — success ya error */}
+            {/* {localMessage && (
+              <FormMessage message={{ type: localMessage.type, text: localMessage.text }} />
+            )} */}
+
+            {/* API response — animated green/red */}
+            <div
+              className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                visible ? "mt-2 max-h-20 opacity-100" : "mt-0 max-h-0 opacity-0"
+              }`}
+            >
+              {localMessage?.text && (
+                <div
+                  className={`inline-block rounded-md px-4 py-2 text-sm shadow-md ${
+                    localMessage.type === "success"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {localMessage.text}
+                </div>
+              )}
+            </div>
 
             <div className="flex justify-end gap-2 pt-2">
               <button
@@ -215,15 +601,15 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 type="submit"
-                disabled={pwdPending}
-                className="rounded-xl bg-[#465FFF] px-4 py-2 text-sm font-medium text-white hover:bg-[#3245ea] disabled:opacity-70"
+                disabled={pwdPending || isMainPasswordPending}
+                className="rounded-xl bg-[#465FFF] px-4 py-2 text-sm font-medium text-white hover:bg-[#3245ea] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {pwdPending ? "Updating..." : "Update Password"}
               </motion.button>
             </div>
           </form>
         ) : (
-          /* Nickname Form */
+          /*  Nickname Form  */
           <form onSubmit={handleNickSubmit(onNicknameSubmit)} className="space-y-4">
             <div>
               <label className="text-sm font-medium">Nick Name</label>
@@ -234,11 +620,13 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
                 className="mt-1 w-full rounded-xl border bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
               />
               {nickErrors.nickname && (
-                <p className="text-error-500 mt-1 text-xs">{nickErrors.nickname.message}</p>
+                <p className="mt-1 text-xs text-red-500">{nickErrors.nickname.message}</p>
               )}
             </div>
 
-            {nickMessage && <FormMessage message={nickMessage} />}
+            {localMessage && (
+              <FormMessage message={{ type: localMessage.type, text: localMessage.text }} />
+            )}
 
             <div className="flex justify-end gap-2 pt-2">
               <button

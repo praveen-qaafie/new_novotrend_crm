@@ -9,6 +9,7 @@ export interface Mt5Account {
   leverage: string;
   mainPasswordStatus?: string | number;
   server?: string; // frontend side
+  main_password_status:string | number
 }
 
 export interface DashboardUser {

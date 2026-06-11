@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from "@/constants/endpoints";
 
 export async function getDashboardStats(): Promise<DashboardResponse> {
   const response = await api.post(API_ENDPOINTS.CRM.GET_DASHBOARD);
+  console.log("result<==", response.data);
   return response.data;
 }
 
