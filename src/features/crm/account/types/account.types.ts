@@ -44,6 +44,7 @@ export interface OpenAccountResponse {
 export interface ChangePasswordPayload {
   passwordtype: "main" | "investor" | "both";
   mt5id: string;
+  mainPasswordStatus?: string | number;
   mainpassword?: string;
   investorpassword?: string;
 }

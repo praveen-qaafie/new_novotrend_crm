@@ -291,13 +291,6 @@ export default function AccountSwitchTabs() {
             )}
           </AnimatePresence>
 
-          {/* Arrow indicator */}
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-            <ArrowRight className="h-4 w-4" />
-            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-          </div>
-
           {/* ── To Account ── */}
           <AnimatePresence mode="wait">
             {activeTab !== "MT5ToWallet" ? (

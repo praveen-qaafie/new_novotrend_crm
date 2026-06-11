@@ -7,6 +7,7 @@ export interface Mt5Account {
   group: string;
   nickname: string;
   leverage: string;
+  mainPasswordStatus?: string | number;
   server?: string; // frontend side
 }
 

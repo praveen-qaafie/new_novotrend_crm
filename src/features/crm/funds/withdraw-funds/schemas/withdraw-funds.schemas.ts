@@ -54,7 +54,7 @@ export const cryptoWithdrawSchema = z.object({
   walletaddress: z
     .string()
     .min(1, "Wallet address is required")
-    .min(10, "Enter a valid wallet address"),
+    .min(10, "Please enter a valid wallet address"),
 
   otp: z
     .string()

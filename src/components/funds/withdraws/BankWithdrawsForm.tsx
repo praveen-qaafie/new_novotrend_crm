@@ -9,6 +9,7 @@ import { useGetUserBankDetails } from "@/features/crm/funds/add-bank-account/hoo
 import { useBankWithdraw } from "@/features/crm/funds/withdraw-funds/hooks/withdraw-funds.hooks";
 import { useSendOtp } from "@/hooks/useSendOtp";
 import { bankWithdrawSchema } from "@/features/crm/funds/withdraw-funds/schemas/withdraw-funds.schemas";
+
 interface BankWithdrawsFormProps {
   onBack: () => void;
   account?: Account;
@@ -22,7 +23,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
   const hasBankDetails = bankDetails && Object.keys(bankDetails).length > 0;
 
   const { status, errorMessage, successMessage, submitWithdraw, reset } = useBankWithdraw();
-  const { otpStatus, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+  const { otpStatus, otpSentOnce, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
 
   const [amount, setAmount] = useState("");
   const [remark, setRemark] = useState("");
@@ -30,20 +31,16 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  // ── Derived states ──────────────────────────────────────────────────────────
-  const isOtpSent = otpStatus === "sent";
+  // Derived states
   const isOtpSending = otpStatus === "sending";
   const isSubmitting = status === "loading";
   const isSuccess = status === "success";
 
-  // OTP button enabled: amount filled, bank exists, otp not yet sent
-  const canSendOtp = !!amount && parseFloat(amount) > 0 && hasBankDetails && !isOtpSent;
+  // otpSentOnce
+  const canSendOtp = !!amount && parseFloat(amount) > 0 && hasBankDetails && !otpSentOnce;
+  const canSubmit = otpSentOnce && otp.length === 6 && termsAccepted && !isSubmitting;
 
-  // Submit button enabled: otp filled (6 digits), terms accepted, not submitting
-  const canSubmit = isOtpSent && otp.length === 6 && termsAccepted && !isSubmitting;
-
-  // ── Handlers ────────────────────────────────────────────────────────────────
-
+  // Handlers
   const handleSendOtp = useCallback(async () => {
     if (!canSendOtp) return;
     await sendOtp({ amount, otp_type: OTP_TYPE });
@@ -51,7 +48,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (/^\d{0,6}$/.test(val)) setOtp(val); // only numeric, max 6
+    if (/^\d{0,6}$/.test(val)) setOtp(val);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,6 +74,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
     onBack();
   }, [reset, resetOtp, onBack]);
 
+  // Success screen
   if (isSuccess) {
     return (
       <motion.div
@@ -99,7 +97,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
     );
   }
 
-  //  Render
+  // Main render
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -126,21 +124,6 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
         </button>
       </div>
 
-      {/* Global success banner */}
-      <AnimatePresence>
-        {isSuccess && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mb-4 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
-          >
-            <CheckCircle2 className="h-4 w-4 shrink-0" />
-            {successMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Global error banner */}
       <AnimatePresence>
         {errorMessage && (
@@ -159,8 +142,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
       {/* Payment method row */}
       <div className="mb-6 flex flex-col justify-between gap-3 text-sm sm:flex-row">
         <p className="text-slate-700 dark:text-slate-300">
-          <span className="font-semibold">Current Wallet Balance:</span> $
-          {/* {bankDetails?.balance ?? "—"}  */} 3.00
+          <span className="font-semibold">Current Wallet Balance:</span> $3.00
         </p>
         <div className="flex gap-3">
           <div>
@@ -246,8 +228,11 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
               value={amount}
               onChange={(e) => {
                 setAmount(e.target.value);
-                // amount change hone pe OTP reset — security
-                if (isOtpSent) resetOtp();
+                // amount change pe OTP reset — security
+                if (otpSentOnce) {
+                  resetOtp();
+                  setOtp("");
+                }
               }}
               min="0"
               step="0.01"
@@ -297,12 +282,14 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
               </>
             ) : (
               <>
-                <KeyRound className="h-4 w-4" /> {isOtpSent ? "OTP Sent ✓" : "Send OTP"}
+                <KeyRound className="h-4 w-4" />
+                {/* otpSentOnce label */}
+                {otpSentOnce ? "OTP Sent ✓" : "Send OTP"}
               </>
             )}
           </button>
 
-          {/* OTP success message — inline, no toast */}
+          {/* OTP success message */}
           <AnimatePresence>
             {otpMessage && (
               <motion.div
@@ -317,7 +304,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
             )}
           </AnimatePresence>
 
-          {/* OTP error message — inline */}
+          {/* OTP error message */}
           <AnimatePresence>
             {otpError && (
               <motion.div
@@ -332,7 +319,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
             )}
           </AnimatePresence>
 
-          {/* OTP input — enabled only after OTP sent */}
+          {/* OTP input */}
           <div>
             <input
               type="text"
@@ -341,7 +328,8 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
               onChange={handleOtpChange}
               placeholder="Enter 6-digit OTP"
               maxLength={6}
-              disabled={!isOtpSent || isSubmitting}
+              // otpSentOnce use karo — timer expire hone pe bhi enabled rahega
+              disabled={!otpSentOnce || isSubmitting}
               className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-50 dark:border-slate-700 dark:text-white dark:disabled:bg-slate-800/40"
             />
             {validationErrors.otp && (

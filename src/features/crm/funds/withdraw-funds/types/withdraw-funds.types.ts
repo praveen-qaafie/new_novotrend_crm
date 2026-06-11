@@ -17,6 +17,7 @@ export interface UseBankWithdrawState {
   status: WithdrawStatus;
   errorMessage: string;
   successMessage: string;
+  otpSentOnce: string
 }
 
 export interface UseBankWithdrawActions {

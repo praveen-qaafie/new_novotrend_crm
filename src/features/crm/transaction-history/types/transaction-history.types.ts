@@ -60,7 +60,8 @@ export interface Transaction {
   receipt?: string;
   note?: string;
   remark?: string;
-  withdrawType?: string;
+  withdraw_type?: string;
+  withdraw_type_details: string;
   from?: string;
   amount?: string;
   to?: string;

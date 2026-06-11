@@ -35,10 +35,13 @@ export function useSubmitEkyc() {
     text: string;
   } | null>(null);
 
+  // console.log("message==>", message)
+
   const mutation = useMutation({
     mutationFn: (payload: EkycPayload) => submitEkyc(payload),
     onSuccess: (data) => {
       const res = data?.data;
+      console.log("res", res);
       if (res?.status === 200) {
         setMessage({ type: "success", text: res?.result || "Documents submitted successfully" });
         // KYC data refetch karo

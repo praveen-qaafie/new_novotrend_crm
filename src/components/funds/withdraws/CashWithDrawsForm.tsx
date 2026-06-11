@@ -14,11 +14,9 @@ interface CashWithdrawsFormProps {
 }
 
 export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
-  // Hooks
-  const { otpStatus, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+  const { otpStatus, otpSentOnce, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
   const { withdrawStatus, errorMessage, successMessage, submitWithdraw, reset } = useCashWithdraw();
 
-  // Local state
   const [amount, setAmount] = useState("");
   const [remark, setRemark] = useState("");
   const [otp, setOtp] = useState("");
@@ -26,12 +24,9 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Derived
-  const isOtpSent = otpStatus === "sent";
   const isOtpSending = otpStatus === "sending";
   const isSubmitting = withdrawStatus === "loading";
   const isSuccess = withdrawStatus === "success";
-
-  // Handlers
 
   const handleSendOtp = useCallback(async () => {
     if (!amount || parseFloat(amount) <= 0) return;
@@ -61,7 +56,7 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
     onBack();
   }, [reset, resetOtp, onBack]);
 
-  // Success Screen 
+  // Success Screen
   if (isSuccess) {
     return (
       <motion.div
@@ -183,8 +178,14 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
                 onChange={(e) => {
                   setAmount(e.target.value);
                   setFieldErrors((p) => ({ ...p, amount: "" }));
+                  // ✅ amount change
+                  if (otpSentOnce) {
+                    resetOtp();
+                    setOtp("");
+                  }
                 }}
-                disabled={isOtpSent}
+                // otpSentOnce
+                disabled={otpSentOnce || isSubmitting}
                 min="0"
                 step="0.01"
                 placeholder="0.00"
@@ -219,20 +220,23 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
             OTP Verification
           </h4>
 
+          {/* Send OTP button */}
           <div className="mb-3">
             <button
               type="button"
               onClick={handleSendOtp}
-              disabled={!amount || parseFloat(amount) <= 0 || isOtpSending || isOtpSent}
+              // otpSentOnce se block karo re-send
+              disabled={!amount || parseFloat(amount) <= 0 || isOtpSending || otpSentOnce}
               className="flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isOtpSending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" /> Sending...
                 </>
-              ) : isOtpSent ? (
+              ) : otpSentOnce ? (
+                // otpSentOnce label
                 <>
-                  <CheckCircle2 className="h-4 w-4" /> OTP Sent
+                  <CheckCircle2 className="h-4 w-4" /> OTP Sent ✓
                 </>
               ) : (
                 <>
@@ -270,36 +274,31 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
             )}
           </AnimatePresence>
 
-          {/* OTP input — sirf OTP sent ke baad */}
-          <AnimatePresence>
-            {isOtpSent && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Enter OTP
-                </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  maxLength={6}
-                  value={otp}
-                  onChange={(e) => {
-                    if (/^\d*$/.test(e.target.value)) {
-                      setOtp(e.target.value);
-                      setFieldErrors((p) => ({ ...p, otp: "" }));
-                    }
-                  }}
-                  placeholder="Enter 6 digit OTP"
-                  className={`w-full rounded-lg border bg-transparent px-4 py-3 text-sm text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:text-white ${fieldErrors.otp ? "border-red-400" : "border-slate-300 dark:border-slate-700"}`}
-                />
-                {fieldErrors.otp && <p className="mt-1 text-xs text-red-500">{fieldErrors.otp}</p>}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* AnimatePresence */}
+          {otpSentOnce && (
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Enter OTP
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => {
+                  if (/^\d*$/.test(e.target.value)) {
+                    setOtp(e.target.value);
+                    setFieldErrors((p) => ({ ...p, otp: "" }));
+                  }
+                }}
+                placeholder="Enter 6 digit OTP"
+                disabled={isSubmitting}
+                className={`w-full rounded-lg border bg-transparent px-4 py-3 text-sm text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:text-white ${fieldErrors.otp ? "border-red-400" : "border-slate-300 dark:border-slate-700"}`}
+              />
+              {fieldErrors.otp && <p className="mt-1 text-xs text-red-500">{fieldErrors.otp}</p>}
+            </div>
+          )}
         </div>
 
         {/* Terms */}
@@ -338,9 +337,10 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
           >
             Cancel
           </button>
+          {/* !isOtpSent → !otpSentOnce */}
           <button
             type="submit"
-            disabled={!amount || !isOtpSent || otp.length !== 6 || !termsAccepted || isSubmitting}
+            disabled={!amount || !otpSentOnce || otp.length !== 6 || !termsAccepted || isSubmitting}
             className="flex items-center gap-2 rounded-md bg-gradient-to-r from-indigo-600 to-violet-500 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}

@@ -17,7 +17,7 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
         >
           <td className="px-4 py-3">{index + 1}</td>
           <td className="px-4 py-3 whitespace-nowrap">{t.date}</td>
-          <td className="px-4 py-3">{t.details ?? "-"}</td>
+          <td className="px-4 py-3">{t.amount ?? "-"}</td>
           <td className="px-4 py-3">
             <span className="rounded-full border border-green-200 bg-green-100 px-3 py-[3px] text-xs font-semibold text-green-700">
               Deposit
@@ -39,7 +39,19 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
             )}
           </td>
           <td className="px-4 py-3">{t.note ?? "-"}</td>
-          <td className="px-4 py-3">{t.status ?? "-"}</td>
+          <td className="px-4 py-3">
+            <span
+              className={`rounded-full px-3 py-1 text-xs ${
+                t.status === "Pending"
+                  ? "bg-[#F4F3FF] text-[#5925DC]"
+                  : t.status === "Approved"
+                    ? "bg-[#ECFDF3] text-[#027A48]"
+                    : "bg-[#FEF3F2] text-[#B42318]"
+              }`}
+            >
+              {t.status}
+            </span>
+          </td>
           <td className="px-4 py-3">{t.remark ?? "-"}</td>
         </tr>
       ))

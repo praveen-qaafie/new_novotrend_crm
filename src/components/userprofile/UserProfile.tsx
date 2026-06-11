@@ -30,6 +30,7 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import CustomDatePicker from "../ui/datePicker/CustomDatePicker";
 import DocumentUpload from "./documents/DocumentUpload";
+import DefaultAvatar from "../ui/avtar/DefaultAvatar";
 
 const tabs = ["Profile", "Documents Verify", "Password Update"];
 
@@ -121,7 +122,8 @@ const UserProfile = () => {
   const {
     register: registerProfile,
     handleSubmit: handleProfileSubmitForm,
-    formState: { errors: profileErrors },
+    // formState: { errors: profileErrors },
+    formState: { errors: profileErrors, isDirty: isProfileDirty },
     setValue: setProfileValue,
     watch: watchProfile,
     reset: resetProfile,
@@ -168,6 +170,8 @@ const UserProfile = () => {
   const watchedDocType2 = watchKyc("doc_type2");
   const watchedProfile = watchProfile();
 
+  const profileHasChanges = isProfileDirty || profileImage !== null;
+
   // Profile Completion
   const completionPercent = calcProfileCompletion({
     first_name: watchedProfile.first_name,
@@ -181,6 +185,25 @@ const UserProfile = () => {
   });
 
   // ── Populate profile form from API
+  // useEffect(() => {
+  //   if (profileData) {
+  //     resetProfile({
+  //       first_name: profileData.first_name ?? "",
+  //       last_name: profileData.last_name ?? "",
+  //       phone: profileData.user_mobile ?? "",
+  //       bio: profileData.user_bio ?? "",
+  //       dob: profileData.birthdate ?? "",
+  //       // country: profileData.contryname ?? "",
+  //       country: profileData.user_country ?? "",
+  //     });
+  //     setProfilePreview(profileData.user_img ?? "");
+
+  //     if (profileData.birthdate) {
+  //       setStartDate(new Date(profileData.birthdate));
+  //     }
+  //   }
+  // }, [profileData, resetProfile]);
+
   useEffect(() => {
     if (profileData) {
       resetProfile({
@@ -189,18 +212,22 @@ const UserProfile = () => {
         phone: profileData.user_mobile ?? "",
         bio: profileData.user_bio ?? "",
         dob: profileData.birthdate ?? "",
-        // country: profileData.contryname ?? "",
         country: profileData.user_country ?? "",
       });
-
       setProfilePreview(profileData.user_img ?? "");
 
       if (profileData.birthdate) {
         setStartDate(new Date(profileData.birthdate));
       }
 
-      // Pre-fill country dropdown if available
-      // (CountryDropdown expects a Country object; adjust if your dropdown supports it)
+      // FIX: pre-select country in dropdown
+      if (profileData.user_country) {
+        setSelectedCountry({
+          country_code: profileData.user_country,
+          country_name: profileData.contryname ?? profileData.user_country,
+          // spread any other fields CountryDropdown's Country type requires with safe defaults
+        } as Country);
+      }
     }
   }, [profileData, resetProfile]);
 
@@ -214,14 +241,6 @@ const UserProfile = () => {
     }
   }, [startDate, setProfileValue]);
 
-  // ── Pre-fill KYC dropdowns
-  // useEffect(() => {
-  //   if (kycData) {
-  //     setKycValue("doc_type", kycData.doc_type ?? "");
-  //     setKycValue("doc_type2", kycData.address_doc_type ?? "");
-  //   }
-  // }, [kycData, setKycValue]);
-
   const firstKyc = kycData?.[0];
 
   useEffect(() => {
@@ -230,6 +249,14 @@ const UserProfile = () => {
       setKycValue("doc_type2", firstKyc.address_doc_type ?? "");
     }
   }, [firstKyc, setKycValue]);
+
+  const kycHasChanges =
+    watchedDocType !== (firstKyc?.doc_type ?? "") ||
+    watchedDocType2 !== (firstKyc?.address_doc_type ?? "") ||
+    fileFront !== null ||
+    fileBack !== null ||
+    fileFront2 !== null ||
+    fileBack2 !== null;
 
   // ── Profile Image Upload
   const handleProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -322,11 +349,11 @@ const UserProfile = () => {
       <div className="relative h-44 rounded-b-md bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 sm:h-28">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
           <div className="relative h-24 w-24 overflow-visible rounded-full border-4 border-white shadow-lg sm:h-28 sm:w-28 dark:border-slate-900">
-            {/* FIX: actual image rendered from profilePreview or fallback */}
-            {profilePreview ? (
+            {/* Actual image rendered from profilePreview or fallback */}
+            {/* {profilePreview ? (
               <Image
                 src={profilePreview}
-                alt="Profile"
+                alt="Profile Img"
                 fill
                 className="h-full w-full rounded-full object-cover"
               />
@@ -334,9 +361,21 @@ const UserProfile = () => {
               <div className="flex h-full w-full items-center justify-center rounded-full bg-indigo-100 text-2xl font-bold text-indigo-600">
                 {displayName.charAt(0).toUpperCase() || "U"}
               </div>
+            )} */}
+            {/* // AFTER */}
+            {/* // AFTER — proper avatar fallback */}
+            {profilePreview ? (
+              <Image
+                src={profilePreview}
+                alt="Profile Img"
+                fill
+                className="h-full w-full rounded-full object-cover"
+                onError={() => setProfilePreview("")} // broken URL pe bhi fallback
+              />
+            ) : (
+              <DefaultAvatar />
             )}
-
-            {/* FIX: camera button now triggers hidden file input */}
+            {/* Camera button now triggers hidden file input */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -344,7 +383,6 @@ const UserProfile = () => {
             >
               <FaCamera className="text-gray-700" size={16} />
             </button>
-
             {/* Hidden file input for profile image — this was MISSING before */}
             <input
               ref={fileInputRef}
@@ -426,18 +464,20 @@ const UserProfile = () => {
                     <p className="mt-1 text-xs text-gray-500">{completionPercent}% completed</p>
                     {/* Hint for what's missing */}
                     {completionPercent < 100 && (
-                      <ul className="mt-2 space-y-0.5 text-xs text-gray-400">
-                        {!watchedProfile.first_name && <li>• Add first name</li>}
-                        {!watchedProfile.last_name && <li>• Add last name</li>}
-                        {!watchedProfile.phone && <li>• Add phone number</li>}
-                        {!watchedProfile.dob && <li>• Add date of birth</li>}
-                        {/* {!watchedProfile.bio && <li>• Add bio</li>} */}
-                        {!watchedProfile.country && <li>• Select country</li>}
-                        {!profilePreview && <li>• Upload profile photo</li>}
-                        {status?.toLowerCase() !== "approved" && (
-                          <li>• {status} KYC verification</li>
-                        )}
-                      </ul>
+                      <ul></ul>
+                      // abhi ye hme nhi show karna hai
+                      // <ul className="mt-2 space-y-0.5 text-xs text-gray-400">
+                      //   {!watchedProfile.first_name && <li>• Add first name</li>}
+                      //   {!watchedProfile.last_name && <li>• Add last name</li>}
+                      //   {!watchedProfile.phone && <li>• Add phone number</li>}
+                      //   {!watchedProfile.dob && <li>• Add date of birth</li>}
+                      //   {/* {!watchedProfile.bio && <li>• Add bio</li>} */}
+                      //   {!watchedProfile.country && <li>• Select country</li>}
+                      //   {!profilePreview && <li>• Upload profile photo</li>}
+                      //   {status?.toLowerCase() !== "approved" && (
+                      //     <li>• {status} KYC verification</li>
+                      //   )}
+                      // </ul>
                     )}
                   </div>
 
@@ -577,11 +617,19 @@ const UserProfile = () => {
                       </div>
 
                       <div className="text-right">
-                        <button
+                        {/* <button
                           type="button"
                           onClick={handleProfileSubmitForm(onProfileSubmit)}
                           disabled={profileUpdating}
                           className="rounded-lg bg-[#465FFF] px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
+                        >
+                          {profileUpdating ? "Saving..." : "Save Changes"}
+                        </button> */}
+                        <button
+                          type="button"
+                          onClick={handleProfileSubmitForm(onProfileSubmit)}
+                          disabled={profileUpdating || !profileHasChanges}
+                          className="rounded-lg bg-[#465FFF] px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
                         >
                           {profileUpdating ? "Saving..." : "Save Changes"}
                         </button>
@@ -618,9 +666,6 @@ const UserProfile = () => {
                   {kycData && (
                     <p className="text-sm font-medium whitespace-nowrap">
                       Status:{" "}
-                      {/* <span className={statusClasses[status.toLowerCase()] || "text-gray-500"}>
-                        {status}
-                      </span> */}
                       <span
                         className={statusClasses[status.toLowerCase() as Status] ?? "text-gray-500"}
                       >
@@ -717,11 +762,19 @@ const UserProfile = () => {
                 {kycMessage && <FormMessage message={kycMessage} />}
 
                 <div className="flex flex-col justify-end gap-4 pt-4 sm:flex-row">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={handleKycSubmitForm(onKycSubmit)}
                     disabled={isPending}
                     className="rounded-lg bg-[#465FFF] px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
+                  >
+                    {isPending ? "Submitting..." : "Submit for Verification"}
+                  </button> */}
+                  <button
+                    type="button"
+                    onClick={handleKycSubmitForm(onKycSubmit)}
+                    disabled={isPending || !kycHasChanges}
+                    className="rounded-lg bg-[#465FFF] px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     {isPending ? "Submitting..." : "Submit for Verification"}
                   </button>

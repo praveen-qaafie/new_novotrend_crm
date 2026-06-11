@@ -134,19 +134,6 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
           <form onSubmit={handlePwdSubmit(onPasswordSubmit)} className="space-y-4">
             <div>
               <label className="text-sm font-medium">Password Type</label>
-              {/* <select
-                value={passwordType}
-                onChange={(e) => {
-                  const val = e.target.value as "main" | "investor" | "both";
-                  setPasswordType(val);
-                }}
-                {...pwdRegister("passwordtype")}
-                className="mt-1 w-full rounded-xl border bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="main">Main</option>
-                <option value="investor">Investor</option>
-                <option value="both">Both</option>
-              </select> */}
               <select
                 value={passwordType}
                 {...pwdRegister("passwordtype", {
@@ -159,7 +146,7 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
               >
                 <option value="main">Main</option>
                 <option value="investor">Investor</option>
-                <option value="both">Both</option>
+                {/* <option value="both">Both</option>  */}
               </select>
             </div>
 

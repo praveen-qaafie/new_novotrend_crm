@@ -90,7 +90,7 @@ export default function FormInModal({ isOpen, onClose, plan }: FormInModalProps)
           </div>
 
           {/* Main Password */}
-          <div className="relative col-span-1">
+          {/* <div className="relative col-span-1">
             <Label>Main Password</Label>
             <Input
               type={showMainPass ? "text" : "password"}
@@ -107,7 +107,7 @@ export default function FormInModal({ isOpen, onClose, plan }: FormInModalProps)
             {errors.mainpassword && (
               <p className="text-error-500 mt-1 text-xs">{errors.mainpassword.message}</p>
             )}
-          </div>
+          </div> */}
 
           {/* Investor Password */}
           <div className="relative col-span-1">
