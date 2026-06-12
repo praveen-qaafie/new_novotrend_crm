@@ -7,8 +7,6 @@ export function useDashboardStats() {
     queryFn: getDashboardStats,
   });
 
-
-
   return {
     ...query,
     user: query.data?.data?.response, // ← DashboardUser
@@ -31,7 +29,6 @@ export function useUserData() {
   };
 }
 
-//
 export function useUserBalanceData() {
   const query = useQuery({
     queryKey: ["userBalance", "userData"],

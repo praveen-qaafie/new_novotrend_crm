@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { KeyRound, CheckCircle2, AlertCircle, Loader2, ArrowRight } from "lucide-react";
+import { KeyRound, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { useSendOtp } from "@/hooks/useSendOtp";
 import {
   useMT5Accounts,

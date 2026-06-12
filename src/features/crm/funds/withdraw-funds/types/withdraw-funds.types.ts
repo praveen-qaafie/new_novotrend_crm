@@ -1,23 +1,20 @@
 export type WithdrawStatus = "idle" | "loading" | "success" | "error";
-
 export type OtpStatus = "idle" | "sending" | "sent" | "error";
-
 export interface BankWithdrawRequest {
   amount: string;
   remark: string;
   otp: string;
 }
-
 export interface BankWithdrawResponse {
   status: number;
   result: string;
 }
-
 export interface UseBankWithdrawState {
   status: WithdrawStatus;
   errorMessage: string;
   successMessage: string;
-  otpSentOnce: string
+  otpSentOnce?: string;
+  reset: () => void;
 }
 
 export interface UseBankWithdrawActions {
@@ -28,7 +25,6 @@ export interface UseBankWithdrawActions {
 export type UseBankWithdrawReturn = UseBankWithdrawState & UseBankWithdrawActions;
 
 // CASH withdrawal types
-
 export interface WithdrawCashRequest {
   amount: string;
   remark: string;

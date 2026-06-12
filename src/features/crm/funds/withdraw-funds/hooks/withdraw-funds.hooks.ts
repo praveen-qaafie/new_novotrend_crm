@@ -6,11 +6,9 @@ import {
 } from "../api/withdraw-funds.api";
 import {
   BankWithdrawRequest,
-  // OtpStatus,
   UseBankWithdrawReturn,
   UseCashWithdrawReturn,
   WithdrawCashRequest,
-  // UseCryptoWithdrawReturn,
   WithdrawCryptoRequest,
   WithdrawStatus,
 } from "../types/withdraw-funds.types";

@@ -51,7 +51,7 @@ function extractRows(tab: TransactionTab, data: Transaction[]): (string | number
         i + 1,
         t.date ?? "",
         t.debit ?? "-",
-        t.withdrawType ?? "-",
+        t.withdraw_type ?? "-",
         t.status ?? "-",
         t.remark ?? "-",
       ]);

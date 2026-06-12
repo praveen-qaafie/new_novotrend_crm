@@ -27,7 +27,7 @@ interface FormInModalProps {
 }
 
 export default function FormInModal({ isOpen, onClose, plan }: FormInModalProps) {
-  const [showMainPass, setShowMainPass] = useState(false);
+  // const [showMainPass, setShowMainPass] = useState(false);
   const [showInvestorPass, setShowInvestorPass] = useState(false);
 
   const { mutate: openAcc, isPending, message } = useOpenAccount();
