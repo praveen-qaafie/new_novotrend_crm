@@ -100,10 +100,12 @@ export default function AffiliateProgress({ progress, inviteLink, data }: Affili
 
   return (
     <>
-      <div className="w-full space-y-6 rounded-2xl border bg-white p-7 shadow-sm">
+      <div className="w-full space-y-6 rounded-2xl border bg-white p-7 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
         {/* Title */}
         <div className="flex justify-between">
-          <p className="font-medium text-gray-700">Loyalty Qualification Progress</p>
+          <p className="font-medium text-gray-700 dark:text-white/90">
+            Loyalty Qualification Progress
+          </p>
 
           <p className="inline-flex items-center gap-1 rounded-xl bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 shadow">
             <FiClock className="mr-1" />
@@ -111,7 +113,7 @@ export default function AffiliateProgress({ progress, inviteLink, data }: Affili
           </p>
         </div>
 
-        <p className="-mt-3 text-sm text-gray-500">
+        <p className="-mt-3 text-sm text-gray-500 dark:text-white/90">
           {100 - progress} more referrals to unlock your next bonus!
         </p>
 
@@ -147,18 +149,18 @@ export default function AffiliateProgress({ progress, inviteLink, data }: Affili
             </svg>
 
             {/* Center Content */}
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-2xl font-semibold text-gray-900">
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center dark:text-white/90">
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white/90">
                 {data?.royaltyinfo?.lotachieve || 0}
               </p>
 
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-white/90">
                 of {data?.royaltyinfo?.lotrequired || 0}
               </span>
             </div>
           </div>
 
-          <p className="mt-4 text-center font-medium text-gray-600">Trading Lots</p>
+          <p className="mt-4 text-center font-medium text-gray-600 dark:text-white/90 ">Trading Lots</p>
 
           {/* Progress 2 */}
           <div className="relative flex h-44 w-44 flex-col items-center justify-center">
@@ -190,23 +192,23 @@ export default function AffiliateProgress({ progress, inviteLink, data }: Affili
             </svg>
 
             {/* Center Content */}
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-2xl font-semibold text-gray-900">
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center dark:text-white/90">
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white/90 dark:text-white/90">
                 {data?.royaltyinfo?.levelachieve_client ?? "-"}
               </p>
 
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-white/90 dark:text-white/90">
                 of {data?.royaltyinfo?.levelrequired_client ?? "-"}
               </span>
             </div>
           </div>
 
-          <p className="mt-4 text-center font-medium text-gray-600">Active Clients</p>
+          <p className="mt-4 text-center font-medium text-gray-600 dark:text-white/90 ">Active Clients</p>
         </div>
 
         {/* Invite Link / Code Section */}
-        <div className="rounded-xl border bg-gray-50 p-2">
-          <div className="flex items-center gap-3">
+        <div className="rounded-xl border bg-gray-50 p-2 dark:border-gray-800 dark:bg-white/[0.03]">
+          <div className="flex items-center gap-3 dark:text-white/90 ">
             {/* Partner Link Toggle */}
             <button
               onClick={() => setPartnerView("link")}
@@ -218,7 +220,7 @@ export default function AffiliateProgress({ progress, inviteLink, data }: Affili
             >
               <FiLink className="text-xl" />
 
-              <span className="absolute -top-8 left-1/2 z-10 -translate-x-1/2 rounded bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
+              <span className="absolute -top-8 left-1/2 z-10 -translate-x-1/2 rounded bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100 dark:text-white/90">
                 Partner Link
               </span>
             </button>
@@ -243,7 +245,7 @@ export default function AffiliateProgress({ progress, inviteLink, data }: Affili
             <input
               readOnly
               value={currentValue}
-              className="flex-1 truncate bg-transparent text-sm text-gray-600 outline-none"
+              className="flex-1 truncate bg-transparent text-sm text-gray-600 outline-none dark:text-white/90"
             />
 
             {/* Copy Button */}

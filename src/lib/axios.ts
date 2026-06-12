@@ -83,6 +83,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// core function 
 // api.interceptors.request.use(async (config) => {
 //   if (config.data) {
 //     console.log("payload-req", config.data);
@@ -93,7 +94,7 @@ api.interceptors.request.use(
 //   return config;
 // });
 
-//  RESPONSE
+//  RESPONSE with encrepted 
 api.interceptors.response.use(async (response) => {
   if (response.data) {
     // console.log("encrepted-data", response.data);
@@ -103,5 +104,31 @@ api.interceptors.response.use(async (response) => {
   }
   return response;
 });
+ 
+// api.interceptors.response.use(
+//   async (response) => {
+//     if (response.data) {
+//       const decrypted = await decryptResponse(response.data);
+//       response.data = JSON.parse(decrypted);
+//     }
+
+//     // Decrypt 
+//     const data = response?.data?.data;
+//     if (data?.status === 401) {
+//       localStorage.removeItem("userToken");
+//       window.location.href = "/sign-in";
+//     }
+
+//     return response;
+//   },
+//   (error) => {
+//     // HTTP level 401
+//     if (error?.response?.status === 401) {
+//       localStorage.removeItem("userToken");
+//       window.location.href = "/sign-in";
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;

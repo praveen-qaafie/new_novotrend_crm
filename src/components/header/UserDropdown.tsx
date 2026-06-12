@@ -1,10 +1,11 @@
 "use client";
 import { useLogout } from "@/features/auth/sign-out/hooks/sign-out.hooks";
 import { useUserData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
-import Image from "next/image";
+// import Image from "next/image";
 import React, { useState } from "react";
 import { PiScrewdriver } from "react-icons/pi";
 import { Dropdown } from "../ui/dropdown/Dropdown";
+import UserAvatar from "../ui/avtar/UserAvatar";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 
 export default function UserDropdown() {
@@ -12,8 +13,7 @@ export default function UserDropdown() {
   const [toolsOpen, setToolsOpen] = useState(false);
 
   const { handleLogout } = useLogout();
-
-  const { user } = useUserData();
+  const { user, isLoading } = useUserData();
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -23,15 +23,18 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
   return (
     <div className="relative">
       <button
         onClick={toggleDropdown}
         className="dropdown-toggle flex items-center text-gray-700 dark:text-gray-400"
       >
-        <span className="mr-3 h-11 w-11 overflow-hidden rounded-full">
+        {/* <span className="mr-3 h-11 w-11 overflow-hidden rounded-full">
           <Image width={44} height={44} src="/images/user/owner.jpg" alt="User" />
-        </span>
+        </span> */}
+
+        <UserAvatar name={user?.user_name} size={44} className="mr-3" loading={isLoading} />
 
         <span className="text-theme-sm mr-1 block font-medium">{user?.user_name}</span>
 
@@ -130,6 +133,7 @@ export default function UserDropdown() {
                   <DropdownItem
                     onItemClick={closeDropdown}
                     tag="a"
+                    target="_blank"
                     href="https://webtrading.novotrend.co/terminal"
                     className="text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                   >
@@ -141,15 +145,16 @@ export default function UserDropdown() {
                   <DropdownItem
                     onItemClick={closeDropdown}
                     tag="a"
-                    // target="_blank"
-                    href="/profile"
+                    target="_blank"
+                    href="https://webtrading.novotrend.co/terminal"
                     className="text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                   >
                     WebTerminal
                   </DropdownItem>
                 </li>
 
-                <li>
+                {/* not using yet */}
+                {/* <li>
                   <DropdownItem
                     onItemClick={closeDropdown}
                     tag="a"
@@ -158,7 +163,7 @@ export default function UserDropdown() {
                   >
                     Economic Calendar
                   </DropdownItem>
-                </li>
+                </li> */}
               </ul>
             )}
           </li>

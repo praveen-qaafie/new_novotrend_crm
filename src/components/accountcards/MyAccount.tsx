@@ -9,8 +9,6 @@ const MyAccount: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"Real" | "Demo">("Real");
   const { user, isLoading } = useDashboardStats();
 
-  console.log("result-user", user); 
-
   const mt5Accounts: Mt5Account[] = (user?.mt5accounts ?? []).map((acc: Mt5Account) => ({
     ...acc,
     server: "Novotrend Ltd.",

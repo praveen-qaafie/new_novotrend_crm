@@ -83,13 +83,13 @@ export default function LoyaltyTiers({ data, isLoading }: LoyaltyTiersProps) {
   }
 
   return (
-    <div className="w-full overflow-hidden bg-white px-3 py-6 md:px-6 md:py-8">
+    <div className="w-full overflow-hidden bg-white px-3 py-6 md:px-6 md:py-8 dark:border-gray-800 dark:bg-white/[0.03]">
       {/* Heading */}
       <div className="mb-8 text-center">
-        <h1 className="mb-2 text-xl font-extrabold text-indigo-600 md:text-3xl">
+        <h1 className="mb-2 text-xl font-extrabold text-indigo-600 md:text-3xl dark:text-white/90">
           Qualification Levels
         </h1>
-        <p className="text-sm text-gray-600 md:text-base">
+        <p className="text-sm text-gray-600 md:text-base dark:text-white/90">
           You are currently in{" "}
           <span className="font-bold text-indigo-600">
             {data?.royaltyinfo?.royaltyname ?? ""} — Level {currentLevel}
@@ -171,7 +171,7 @@ export default function LoyaltyTiers({ data, isLoading }: LoyaltyTiersProps) {
 
                 {/* CARD */}
                 <div
-                  className={`w-[210px] rounded-2xl border bg-white p-4 transition-all duration-300 hover:-translate-y-1 md:w-[250px] md:p-5 ${
+                  className={`w-[210px] rounded-2xl border bg-white p-4 transition-all duration-300 hover:-translate-y-1 md:w-[250px] md:p-5 dark:border-gray-800 dark:bg-white/[0.03] ${
                     isCurrent
                       ? "border-indigo-400 shadow-xl shadow-indigo-100"
                       : isCompleted
@@ -179,32 +179,32 @@ export default function LoyaltyTiers({ data, isLoading }: LoyaltyTiersProps) {
                         : "border-gray-100 shadow-sm"
                   }`}
                 >
-                  <h2 className="mb-4 text-center text-sm leading-snug font-bold text-indigo-600 md:text-base">
+                  <h2 className="mb-4 text-center text-sm leading-snug font-bold text-indigo-600 md:text-base dark:text-white/90">
                     {level.title}
                   </h2>
 
                   <div className="space-y-2.5">
-                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5">
-                      <p className="mb-1 text-[11px] text-gray-500">Active Accounts Required</p>
-                      <h3 className="text-sm font-bold text-indigo-900 md:text-base">
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5 dark:border-gray-800 dark:bg-white/[0.03]">
+                      <p className="mb-1 text-[11px] text-gray-500 dark:text-white/90 dark:text-white/90">Active Accounts Required</p>
+                      <h3 className="text-sm font-bold text-indigo-900 md:text-base dark:text-white/90">
                         {level.accounts}
                       </h3>
                     </div>
-                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5">
-                      <p className="mb-1 text-[11px] text-gray-500">Trade Lot Size Required</p>
-                      <h3 className="text-sm font-bold text-indigo-900 md:text-base">
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5 dark:border-gray-800 dark:bg-white/[0.03] ">
+                      <p className="mb-1 text-[11px] text-gray-500 dark:text-white/90">Trade Lot Size Required</p>
+                      <h3 className="text-sm font-bold text-indigo-900 md:text-base dark:text-white/90">
                         {level.lots}
                       </h3>
                     </div>
-                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5">
-                      <p className="mb-1 text-[11px] text-gray-500">Time Validity</p>
-                      <h3 className="text-sm font-bold text-indigo-900 md:text-base">
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5 dark:border-gray-800 dark:bg-white/[0.03]">
+                      <p className="mb-1 text-[11px] text-gray-500 dark:text-white/90">Time Validity</p>
+                      <h3 className="text-sm font-bold text-indigo-900 md:text-base dark:text-white/90">
                         {level.validity}
                       </h3>
                     </div>
-                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5">
-                      <p className="mb-1 text-[11px] text-gray-500">Reward</p>
-                      <h3 className="text-sm font-bold text-indigo-900 md:text-base">
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2.5 dark:border-gray-800 dark:bg-white/[0.03]">
+                      <p className="mb-1 text-[11px] text-gray-500 dark:text-white/90">Reward</p>
+                      <h3 className="text-sm font-bold text-indigo-900 md:text-base dark:text-white/90">
                         ${level.reward.toLocaleString()}
                       </h3>
                     </div>

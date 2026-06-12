@@ -41,31 +41,6 @@ export function useOpenAccount() {
   return { ...mutation, message };
 }
 
-// MT5 account password update
-// export function useChangePassword() {
-//   const [message, setMessage] = useState<{
-//     type: "success" | "error";
-//     text: string;
-//   } | null>(null);
-
-//   const mutation = useMutation({
-//     mutationFn: changePassword,
-//     onSuccess: (data) => {
-//       const res = data?.data;
-//       if (res?.status === 200) {
-//         setMessage({ type: "success", text: res?.result || "Password changed successfully" });
-//       } else {
-//         setMessage({ type: "error", text: res?.result || "Failed to change password" });
-//       }
-//     },
-//     onError: () => {
-//       setMessage({ type: "error", text: "Something went wrong. Please try again." });
-//     },
-//   });
-
-//   return { ...mutation, message };
-// }
-
 export function useChangePassword() {
   const mutation = useMutation({
     mutationFn: changePassword,
@@ -74,25 +49,9 @@ export function useChangePassword() {
 }
 
 export function useUpdateNickname() {
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
-
   const mutation = useMutation({
     mutationFn: updateNickname,
-    onSuccess: (data) => {
-      const res = data?.data;
-      if (res?.status === 200) {
-        setMessage({ type: "success", text: res?.result || "Nickname updated successfully" });
-      } else {
-        setMessage({ type: "error", text: res?.result || "Failed to update nickname" });
-      }
-    },
-    onError: () => {
-      setMessage({ type: "error", text: "Something went wrong. Please try again." });
-    },
   });
 
-  return { ...mutation, message };
+  return mutation;
 }

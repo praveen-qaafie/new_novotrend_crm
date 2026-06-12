@@ -9,24 +9,6 @@ export function useLogout() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedRef = useRef(0);
 
-  // const handleLogout = useCallback(async () => {
-  //   try {
-  //     await logoutUser();
-  //   } catch (err) {
-  //     console.error("Logout failed", err);
-  //   } finally {
-  //     // storage clear
-  //     document.cookie = "auth_token=; path=/; max-age=0; SameSite=Strict";
-  //     localStorage.clear();
-  //     sessionStorage.clear();
-
-  //     // for Tab sync
-  //     localStorage.setItem("logout-event", Date.now().toString());
-
-  //     router.push("/sign-in");
-  //   }
-  // }, [router]);
-
   const handleLogout = useCallback(async () => {
     document.body.style.opacity = "0";
     document.body.style.transition = "opacity 0.2s";

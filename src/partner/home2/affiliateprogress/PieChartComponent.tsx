@@ -11,7 +11,6 @@ type PremiumPieChartProps = {
 };
 
 export default function PremiumPieChart({ totalLots = 0, activeLevel = 0 }: PremiumPieChartProps) {
-
   const tradingLots = parseFloat(String(totalLots)) || 0;
   const activeClients = parseFloat(String(activeLevel)) || 0;
   const isNoData = tradingLots === 0 && activeClients === 0;
@@ -79,12 +78,14 @@ export default function PremiumPieChart({ totalLots = 0, activeLevel = 0 }: Prem
     <div className="h-[340px]">
       {/* Header */}
       <div className="mb-2">
-        <h2 className="text-left font-medium text-gray-700">Affiliate Progress Status</h2>
+        <h2 className="text-left font-medium text-gray-700 dark:text-white/90">
+          Affiliate Progress Status
+        </h2>
       </div>
 
       {/* Chart Area */}
       <div className="relative flex flex-1 items-center justify-center">
-        <div className="h-[290px] w-full">
+        <div className="h-[290px] w-full dark:text-white/90">
           <ReactApexChart
             key={`${tradingLots}-${activeClients}`}
             options={options}

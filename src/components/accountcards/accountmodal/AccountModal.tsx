@@ -156,16 +156,26 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
   };
 
   const onNicknameSubmit = (data: UpdateNicknameFormData) => {
+    setLocalMessage(null);
+
     updateNick(
       { mt5id, nickname: data.nickname },
       {
         onSuccess: (res) => {
-          if (res?.data?.status === 200) {
-            handleClose();
+          const status = res?.data?.status;
+          const resultMsg: string = res?.data?.result ?? "";
+
+          if (status === 200) {
+            queryClient.invalidateQueries({ queryKey: ["dashboard", "stats"] });
+            setLocalMessage({
+              type: "success",
+              text: resultMsg || "Nickname updated successfully",
+            });
+            setTimeout(() => handleClose(), 2000);
           } else {
             setLocalMessage({
               type: "error",
-              text: res?.data?.result || "Failed to update nickname.",
+              text: resultMsg || "Failed to update nickname.",
             });
           }
         },

@@ -27,12 +27,10 @@ export default function DashboardHome2() {
           />
         </div>
         <div className="md:col-span-3">
-          <div className="space-y-6 rounded-2xl border bg-white p-6 shadow-sm">
+          <div className="space-y-6 rounded-2xl border p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <PieChartComponent
               totalLots={data?.royaltyinfo?.total_lots}
               activeLevel={data?.active_clients}
-              // totalLots={15}
-              // activeLevel={20}
             />
           </div>
         </div>

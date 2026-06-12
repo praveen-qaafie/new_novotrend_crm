@@ -40,7 +40,7 @@ export default function CommissionCard({ amount }: CommissionCardProps) {
 
   return (
     <>
-      <div className="flex h-full w-full flex-col justify-between rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="flex h-full w-full flex-col justify-between rounded-2xl border bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="mb-6 gap-4">
           {/* Left vector image */}
           <div className="flex flex-shrink-0 items-center justify-center">
@@ -49,16 +49,16 @@ export default function CommissionCard({ amount }: CommissionCardProps) {
 
           {/* Text section */}
           <div>
-            <p className="text-center font-medium text-gray-600">Total Commission </p>
+            <p className="text-center font-medium text-gray-600 dark:text-white/90">Total Commission </p>
 
-            <h2 className="mt-2 text-center text-3xl font-semibold">${amount}</h2>
+            <h2 className="mt-2 text-center text-3xl font-semibold dark:text-white/90">${amount}</h2>
           </div>
         </div>
 
         <button
           type="button"
           onClick={() => setOpenModal(true)}
-          className="mt-auto w-full rounded-xl bg-indigo-500 py-3 font-medium text-white transition hover:bg-indigo-600"
+          className="mt-auto w-full rounded-xl bg-indigo-500 py-3 font-medium text-white transition hover:bg-indigo-600 dark:text-white/90 "
         >
           Partner Levels
         </button>
