@@ -36,6 +36,7 @@ export interface UserProfileData {
   birthdate: string;
   user_bio: string;
   user_reg_code: string;
+  user_reg_date: string;
   user_mobile: string;
   user_country: string;
   user_img: string;

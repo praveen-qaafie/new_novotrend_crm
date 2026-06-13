@@ -16,8 +16,6 @@ export function useLogin() {
     onSuccess: (data) => {
       const apiData = data?.data;
 
-      console.log("apiData", apiData);
-
       if (apiData?.status === 200) {
         const authType = Number(apiData?.authType ?? 0);
 

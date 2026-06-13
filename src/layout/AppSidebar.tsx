@@ -204,7 +204,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) =
     if (foundIndex === null) return;
 
     setOpenSubmenu((prev) => (prev?.index === foundIndex ? prev : { index: foundIndex! }));
-    // setOpenSubmenu((prev) => (prev?.index === foundIndex ? prev : { index: foundIndex }));
   }, [pathname]);
 
   const renderMenu = (items: NavItem[]) => (
@@ -225,7 +224,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) =
               <button
                 onClick={() => handleSubmenuToggle(index)}
                 className={`menu-item group ${
-                  openSubmenu?.index === index || hasActiveChild // ✅ bas ye add karo
+                  openSubmenu?.index === index || hasActiveChild
                     ? "menu-item-active"
                     : "menu-item-inactive"
                 }`}
@@ -238,17 +237,33 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) =
                 <ChevronDownIcon />
               </button>
             ) : nav.path ? (
-              <Link
-                href={nav.path}
-                className={`menu-item ${
-                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                }`}
-              >
-                <span>{nav.icon}</span>
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">{nav.name}</span>
-                )}
-              </Link>
+              nav.target === "_blank" ? (
+                <a
+                  href={nav.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`menu-item ${
+                    isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+                  }`}
+                >
+                  <span>{nav.icon}</span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="menu-item-text">{nav.name}</span>
+                  )}
+                </a>
+              ) : (
+                <Link
+                  href={nav.path}
+                  className={`menu-item ${
+                    isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+                  }`}
+                >
+                  <span>{nav.icon}</span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="menu-item-text">{nav.name}</span>
+                  )}
+                </Link>
+              )
             ) : null}
 
             {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (

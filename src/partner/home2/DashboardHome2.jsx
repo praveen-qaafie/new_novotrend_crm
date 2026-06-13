@@ -12,7 +12,7 @@ export default function DashboardHome2() {
   return (
     <div className="space-y-10">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-        <div className="md:col-span-3">
+        <div className="md:col-span-3 dark:border-gray-800 dark:bg-white/[0.03]">
           <CommissionCard amount={data?.total_ib_commission} />
         </div>
         <div className="md:col-span-6">

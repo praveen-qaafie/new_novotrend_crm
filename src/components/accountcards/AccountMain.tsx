@@ -273,7 +273,7 @@ export default function AccountMain() {
       <AccountModal
         type={modalType}
         onClose={() => setModalType(null)}
-        mt5id={expanded ?? ""} // ← currently expanded card ka accno
+        mt5id={expanded ?? ""}
         nickname={mt5Accounts.find((a) => a.accno === expanded)?.nickname ?? ""}
       />
     </section>

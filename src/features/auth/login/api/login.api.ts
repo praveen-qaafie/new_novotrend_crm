@@ -4,6 +4,5 @@ import { LoginPayload, LoginResponse } from "../types/login.types";
 
 export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
   const response = await api.post(API_ENDPOINTS.AUTH.LOGIN, payload);
-  console.log("response", response)
   return response.data;
 }

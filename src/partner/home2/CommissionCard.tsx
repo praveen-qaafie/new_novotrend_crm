@@ -33,14 +33,13 @@ const partnerLevels = [
   },
 ];
 
-// Component
 export default function CommissionCard({ amount }: CommissionCardProps) {
 
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <>
-      <div className="flex h-full w-full flex-col justify-between rounded-2xl border bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="flex h-full w-full flex-col justify-between rounded-2xl border p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="mb-6 gap-4">
           {/* Left vector image */}
           <div className="flex flex-shrink-0 items-center justify-center">
@@ -66,7 +65,7 @@ export default function CommissionCard({ amount }: CommissionCardProps) {
 
       {/* Modal */}
       {openModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="relative w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
             {/* Close Button */}
             <button

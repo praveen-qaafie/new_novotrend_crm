@@ -35,10 +35,9 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
   const [showMainPass, setShowMainPass] = useState(false);
   const [showInvestorPass, setShowInvestorPass] = useState(false);
 
-  // canChangePassword: false hoga jab API response mein can_change_password = false aaye
   const [canChangePassword, setCanChangePassword] = useState(true);
 
-  // Local message state — FormMessage ko pass karenge
+  // Local message state — to pass FormMessage
   const [localMessage, setLocalMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -309,10 +308,6 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
               </div>
             )}
 
-            {/* API response message — success ya error */}
-            {/* {localMessage && (
-              <FormMessage message={{ type: localMessage.type, text: localMessage.text }} />
-            )} */}
 
             {/* API response — animated green/red */}
             <div

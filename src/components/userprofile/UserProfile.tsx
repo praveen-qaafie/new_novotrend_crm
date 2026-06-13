@@ -334,8 +334,8 @@ const UserProfile = () => {
     ? `${profileData.first_name ?? ""} ${profileData.last_name ?? ""}`.trim() || "—"
     : "—";
 
-  const displayJoined = profileData?.birthdate
-    ? new Date(profileData.birthdate).toLocaleDateString("en-IN", {
+  const displayJoined = profileData?.user_reg_date
+    ? new Date(profileData.user_reg_date).toLocaleDateString("en-IN", {
         month: "long",
         year: "numeric",
       })

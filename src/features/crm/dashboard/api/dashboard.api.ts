@@ -10,7 +10,6 @@ import { API_ENDPOINTS } from "@/constants/endpoints";
 
 export async function getDashboardStats(): Promise<DashboardResponse> {
   const response = await api.post(API_ENDPOINTS.CRM.GET_DASHBOARD);
-  console.log("result<==", response.data);
   return response.data;
 }
 
@@ -21,6 +20,7 @@ export async function getUserData(): Promise<UserResponse> {
 
 export async function getUserBalanceData(): Promise<UserBalanceDataResponse> {
   const response = await api.post(API_ENDPOINTS.CRM.USER_BALANCE_DATA);
+  console.log("data3", response);
   return response.data;
 }
 

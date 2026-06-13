@@ -42,7 +42,7 @@ const BecomePartnerModal: React.FC<BecomePartnerModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[10] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-gray-900">
         {/* Title */}
         <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
