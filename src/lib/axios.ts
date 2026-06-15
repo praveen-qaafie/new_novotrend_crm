@@ -38,7 +38,7 @@ api.interceptors.request.use(
       }
     }
 
-    // Log
+    // Log check 
     // if (config.data instanceof FormData) {
     //   const rawPayload: Record<string, any> = {};
 
@@ -95,40 +95,51 @@ api.interceptors.request.use(
 // });
 
 //  RESPONSE with encrepted 
-api.interceptors.response.use(async (response) => {
-  if (response.data) {
-    // console.log("encrepted-data", response.data);
-    const decrypted = await decryptResponse(response.data);
-    // console.log("decrypted-res", decrypted);
-    response.data = JSON.parse(decrypted);
-  }
-  return response;
-});
- 
-// api.interceptors.response.use(
-//   async (response) => {
-//     if (response.data) {
-//       const decrypted = await decryptResponse(response.data);
-//       response.data = JSON.parse(decrypted);
-//     }
-
-//     // Decrypt 
-//     const data = response?.data?.data;
-//     if (data?.status === 401) {
-//       localStorage.removeItem("userToken");
-//       window.location.href = "/sign-in";
-//     }
-
-//     return response;
-//   },
-//   (error) => {
-//     // HTTP level 401
-//     if (error?.response?.status === 401) {
-//       localStorage.removeItem("userToken");
-//       window.location.href = "/sign-in";
-//     }
-//     return Promise.reject(error);
+// api.interceptors.response.use(async (response) => {
+//   if (response.data) {
+//     // console.log("encrepted-data", response.data);
+//     const decrypted = await decryptResponse(response.data);
+//     // console.log("decrypted-res", decrypted);
+//     response.data = JSON.parse(decrypted);
 //   }
-// );
+//   return response;
+// });
+
+
+// token expiry 
+
+api.interceptors.response.use(
+  async (response) => {
+    try {
+      if (response.data) {
+        const decrypted = await decryptResponse(response.data);
+        response.data = JSON.parse(decrypted);
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Response decryption failed:", error);
+      return Promise.reject(error);
+    }
+  },
+
+  async (error) => {
+    // Handle Unauthorized (401)
+    if (error.response?.status === 401) {
+      console.warn("Session expired. Logging out...");
+
+      // Remove auth cookie
+      document.cookie =
+        "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+   
+      // queryClient.clear();
+      // Redirect to login page
+      window.location.href = "/sign-in";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

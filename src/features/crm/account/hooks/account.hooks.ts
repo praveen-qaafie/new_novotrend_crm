@@ -27,11 +27,11 @@ export function useOpenAccount() {
     mutationFn: (payload: OpenAccountPayload) => openAccount(payload),
     onSuccess: (data) => {
       const res = data?.data;
-      if (res?.status === 200) {
-        setMessage({ type: "success", text: res?.result || "Account opened successfully" });
-      } else {
-        setMessage({ type: "error", text: res?.result || "Failed to open account" });
-      }
+      const isSuccess = res?.status === 200;
+      setMessage({
+        type: isSuccess ? "success" : "error",
+        text: res?.result || (isSuccess ? "Account opened successfully" : "Failed to open account"),
+      });
     },
     onError: () => {
       setMessage({ type: "error", text: "Something went wrong. Please try again." });

@@ -42,7 +42,6 @@ export function useLogin() {
         }
         router.push("/email-verify");
       } else {
-        // ← API ka error message
         setMessage({
           type: "error",
           text: apiData?.result || "Login failed",

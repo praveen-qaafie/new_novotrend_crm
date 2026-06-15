@@ -27,7 +27,7 @@ interface FormInModalProps {
 }
 
 export default function FormInModal({ isOpen, onClose, plan }: FormInModalProps) {
-  // const [showMainPass, setShowMainPass] = useState(false);
+  const [showMainPass, setShowMainPass] = useState(false);
   const [showInvestorPass, setShowInvestorPass] = useState(false);
 
   const { mutate: openAcc, isPending, message } = useOpenAccount();
@@ -89,14 +89,16 @@ export default function FormInModal({ isOpen, onClose, plan }: FormInModalProps)
             )}
           </div>
 
-          {/* Main Password */}
-          {/* <div className="relative col-span-1">
+          {/* Main Password — always hidden, no toggle */}
+          <div className="relative col-span-1">
             <Label>Main Password</Label>
+
             <Input
               type={showMainPass ? "text" : "password"}
               placeholder="Enter main password"
               {...register("mainpassword")}
             />
+
             <button
               type="button"
               className="absolute top-10 right-3 text-gray-500 hover:text-gray-700"
@@ -104,12 +106,13 @@ export default function FormInModal({ isOpen, onClose, plan }: FormInModalProps)
             >
               {showMainPass ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
+
             {errors.mainpassword && (
               <p className="text-error-500 mt-1 text-xs">{errors.mainpassword.message}</p>
             )}
-          </div> */}
+          </div>
 
-          {/* Investor Password */}
+          {/* Investor Password — toggle visible */}
           <div className="relative col-span-1">
             <Label>Investor Password</Label>
             <Input

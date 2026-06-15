@@ -185,24 +185,6 @@ const UserProfile = () => {
   });
 
   // ── Populate profile form from API
-  // useEffect(() => {
-  //   if (profileData) {
-  //     resetProfile({
-  //       first_name: profileData.first_name ?? "",
-  //       last_name: profileData.last_name ?? "",
-  //       phone: profileData.user_mobile ?? "",
-  //       bio: profileData.user_bio ?? "",
-  //       dob: profileData.birthdate ?? "",
-  //       // country: profileData.contryname ?? "",
-  //       country: profileData.user_country ?? "",
-  //     });
-  //     setProfilePreview(profileData.user_img ?? "");
-
-  //     if (profileData.birthdate) {
-  //       setStartDate(new Date(profileData.birthdate));
-  //     }
-  //   }
-  // }, [profileData, resetProfile]);
 
   useEffect(() => {
     if (profileData) {
@@ -465,7 +447,6 @@ const UserProfile = () => {
                     {/* Hint for what's missing */}
                     {completionPercent < 100 && (
                       <ul></ul>
-                      // abhi ye hme nhi show karna hai
                       // <ul className="mt-2 space-y-0.5 text-xs text-gray-400">
                       //   {!watchedProfile.first_name && <li>• Add first name</li>}
                       //   {!watchedProfile.last_name && <li>• Add last name</li>}
@@ -617,14 +598,6 @@ const UserProfile = () => {
                       </div>
 
                       <div className="text-right">
-                        {/* <button
-                          type="button"
-                          onClick={handleProfileSubmitForm(onProfileSubmit)}
-                          disabled={profileUpdating}
-                          className="rounded-lg bg-[#465FFF] px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
-                        >
-                          {profileUpdating ? "Saving..." : "Save Changes"}
-                        </button> */}
                         <button
                           type="button"
                           onClick={handleProfileSubmitForm(onProfileSubmit)}

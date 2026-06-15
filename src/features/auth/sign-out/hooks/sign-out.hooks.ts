@@ -18,14 +18,16 @@ export function useLogout() {
     } catch (err) {
       console.error("Logout failed", err);
     } finally {
-      document.cookie = "auth_token=; path=/; max-age=0; SameSite=Strict";
+      document.cookie = "auth_token=; path=/; max-age=0; SameSite=Strict; Secure";
+      document.cookie = "userToken=; path=/; max-age=0; SameSite=Strict; Secure";
+
       localStorage.clear();
       sessionStorage.clear();
       localStorage.setItem("logout-event", Date.now().toString());
 
-      // Opacity restore — login page render hoga clean
       document.body.style.opacity = "1";
-      router.push("/sign-in");
+
+      router.replace("/sign-in");
     }
   }, [router]);
 
@@ -70,7 +72,7 @@ export function useLogout() {
   useEffect(() => {
     const syncLogout = (e: StorageEvent) => {
       if (e.key === "logout-event") {
-        router.push("/sign-in");
+        router.replace("/sign-in");
       }
     };
     window.addEventListener("storage", syncLogout);

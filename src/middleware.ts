@@ -15,25 +15,30 @@ export function middleware(request: NextRequest) {
 
   const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
 
-  // dashboard
+  const withNoCache = (response: NextResponse) => {
+    response.headers.set("Cache-Control", "no-store");
+    return response;
+  };
+
+  // Dashboard 
   if (pathname === "/") {
-    if (token) {
-      return NextResponse.next(); // dashboard — allow
+    if (!token) {
+      return withNoCache(NextResponse.redirect(new URL("/sign-in", request.url)));
     }
-    return NextResponse.redirect(new URL("/sign-in", request.url)); // without token → sign-in
+    return withNoCache(NextResponse.next());
   }
 
   // Protected route + no token → sign-in
   if (!isPublicRoute && !token) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    return withNoCache(NextResponse.redirect(new URL("/sign-in", request.url)));
   }
 
-  // Logged in + public route → dashboard "/"
+  // Logged in + public route → dashboard
   if (isPublicRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return withNoCache(NextResponse.redirect(new URL("/", request.url)));
   }
 
-  return NextResponse.next();
+  return withNoCache(NextResponse.next());
 }
 
 export const config = {

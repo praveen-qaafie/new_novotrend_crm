@@ -24,7 +24,7 @@ export function useRegister() {
 
         if (token) {
           // localStorage.setItem("userToken", token);
-          sessionStorage.setItem("tempVerifyToken", token); // ← production approach
+          sessionStorage.setItem("tempVerifyToken", token);
         }
 
         // UserInfo save karo
@@ -33,7 +33,6 @@ export function useRegister() {
         router.push("/email-verify");
       } else {
         console.log("Registration failed");
-        // toast.error(responseData?.result || "Registration failed");
       }
     },
     onError: () => {
