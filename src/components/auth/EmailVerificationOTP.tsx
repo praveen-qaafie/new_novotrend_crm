@@ -7,6 +7,7 @@ import {
   useVerifyOtp,
   useResendOtp,
 } from "@/features/auth/email-verification/hooks/email-verification.hooks";
+import FormMessage from "@/common/UI/FormMessage";
 
 const OTP_LENGTH = 6;
 
@@ -20,8 +21,8 @@ export default function EmailVerificationOTP() {
 
   const [token, setToken] = useState<string | null>(null);
 
-  const { mutate: verify, isPending: isVerifying } = useVerifyOtp();
-  const { mutate: resend, isPending: isResending } = useResendOtp();
+  const { mutate: verify, isPending: isVerifying, message: verifyMessage } = useVerifyOtp();
+  const { mutate: resend, isPending: isResending, message } = useResendOtp();
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem("tempVerifyToken");
@@ -142,6 +143,9 @@ export default function EmailVerificationOTP() {
             </div>
             {error && <p className="text-error-500 mt-1.5 text-sm">Please enter complete OTP.</p>}
           </div>
+
+          {verifyMessage && <FormMessage message={verifyMessage} />}
+          {message && <FormMessage message={message} />}
 
           <button
             type="button"

@@ -8,10 +8,31 @@ const PUBLIC_ROUTES = [
   "/email-verify",
 ];
 
+const authRoutes = ["/sign-in", "/register", "/forgot-password"];
+const tokenBasedRoutes = ["/set-password"];
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const token = request.cookies.get("auth_token")?.value || request.cookies.get("userToken")?.value;
+
+  // Not logged in
+  if (!token) {
+    if (authRoutes.includes(pathname) || tokenBasedRoutes.includes(pathname)) {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+
+  // Logged in
+  if (authRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // allow set-password even if logged in
+  if (tokenBasedRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
 
   const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
 
@@ -20,7 +41,7 @@ export function middleware(request: NextRequest) {
     return response;
   };
 
-  // Dashboard 
+  // Dashboard
   if (pathname === "/") {
     if (!token) {
       return withNoCache(NextResponse.redirect(new URL("/sign-in", request.url)));

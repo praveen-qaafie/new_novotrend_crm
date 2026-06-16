@@ -1,15 +1,52 @@
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { forgotPassword } from "../api/forgot-password.api";
 
+// export function useForgotPassword() {
+//   return useMutation({
+//     mutationFn: (email: string) => forgotPassword(email),
+//     onSuccess: (_, email) => {
+//       console.log(email, _);
+//       // toast.success("Reset link sent successfully");
+//     },
+//     onError: () => {
+//       // toast.error("Error while sending reset link");
+//     },
+//   });
+// }
+
 export function useForgotPassword() {
-  return useMutation({
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const mutation = useMutation({
     mutationFn: (email: string) => forgotPassword(email),
-    onSuccess: (_, email) => {
-      console.log(email, _);
-      // toast.success("Reset link sent successfully");
+    onSuccess: (data) => {
+      const responseData = data?.data?.data;
+      console.log("responseData-11", responseData);
+      console.log("responseData?.status == 200,12", responseData?.status === 200)
+      if (responseData?.status == 200) {
+        console.log("responseData?.status === 200", responseData?.status === 200)
+        setMessage({
+          type: "success",
+          text: responseData?.result || "Reset link sent successfully.",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          text: responseData?.result || "Failed to send reset link. Please try again.",
+        });
+      }
     },
     onError: () => {
-      // toast.error("Error while sending reset link");
+      setMessage({
+        type: "error",
+        text: "Something went wrong. Please try again.",
+      });
     },
   });
+
+  return { ...mutation, message };
 }

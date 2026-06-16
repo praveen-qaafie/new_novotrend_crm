@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { getCountries, registerUser } from "../api/register.api";
 import { RegisterPayload } from "../types/register.types";
+import { useState } from "react";
 
 export function useCountries() {
   return useQuery({
@@ -11,32 +12,68 @@ export function useCountries() {
   });
 }
 
+// export function useRegister() {
+//   const router = useRouter();
+
+//   return useMutation({
+//     mutationFn: (payload: RegisterPayload) => registerUser(payload),
+//     onSuccess: (data) => {
+//       const responseData = data?.data;
+
+//       if (responseData?.status === 200) {
+//         const token = responseData?.response?.token;
+
+//         if (token) {
+//           // localStorage.setItem("userToken", token);
+//           sessionStorage.setItem("tempVerifyToken", token);
+//         }
+
+//         // UserInfo save karo
+//         localStorage.setItem("UserInfo", JSON.stringify(responseData?.response));
+
+//         router.push("/email-verify");
+//       } else {
+//         console.log("Registration failed");
+//       }
+//     },
+//     onError: () => {
+//       // global error — interceptor handle karega
+//     },
+//   });
+// }
+
 export function useRegister() {
   const router = useRouter();
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (payload: RegisterPayload) => registerUser(payload),
     onSuccess: (data) => {
       const responseData = data?.data;
-
       if (responseData?.status === 200) {
         const token = responseData?.response?.token;
-
         if (token) {
-          // localStorage.setItem("userToken", token);
           sessionStorage.setItem("tempVerifyToken", token);
         }
-
-        // UserInfo save karo
         localStorage.setItem("UserInfo", JSON.stringify(responseData?.response));
-
         router.push("/email-verify");
       } else {
-        console.log("Registration failed");
+        setMessage({
+          type: "error",
+          text: responseData?.result || "Registration failed. Please try again.",
+        });
       }
     },
     onError: () => {
-      // global error — interceptor handle karega
+      setMessage({
+        type: "error",
+        text: "Something went wrong. Please try again.",
+      });
     },
   });
+
+  return { ...mutation, message };
 }

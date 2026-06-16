@@ -13,12 +13,13 @@ import Link from "next/link";
 import { useState } from "react";
 import CountryDropdown from "./countrydropdown/CountryDropdown";
 import { Country } from "@/features/auth/register/types/register.types";
+import FormMessage from "@/common/UI/FormMessage";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
-  const { mutate: register, isPending } = useRegister();
+  const { mutate: register, isPending, message } = useRegister();
 
   const {
     register: formRegister,
@@ -137,10 +138,11 @@ export default function SignUpForm() {
 
             {/* Mobile + Country */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div>
+              <div className="relative z-10">
                 <Label>
                   Country<span className="text-error-500">*</span>
                 </Label>
+                <input type="hidden" {...formRegister("country_id")} />
                 <CountryDropdown value={selectedCountry} onChange={handleCountryChange} />
                 {errors.country_id && (
                   <p className="text-error-500 mt-1 text-sm">{errors.country_id.message}</p>
@@ -209,6 +211,12 @@ export default function SignUpForm() {
             </div>
             {errors.inputchecked && (
               <p className="text-error-500 text-sm">{errors.inputchecked.message}</p>
+            )}
+
+            {message && (
+              <div className="mt-2">
+                <FormMessage message={message} />
+              </div>
             )}
 
             {/* Submit */}

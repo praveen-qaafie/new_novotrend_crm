@@ -8,9 +8,10 @@ import {
 } from "@/features/auth/forgot-password/schemas/forgot-password.schema";
 import { useForgotPassword } from "@/features/auth/forgot-password/hooks/forgot-password.hooks";
 import Link from "next/link";
+import FormMessage from "@/common/UI/FormMessage";
 
 export default function ForgetPassword() {
-  const { mutate: sendResetLink, isPending } = useForgotPassword();
+  const { mutate: sendResetLink, isPending, message } = useForgotPassword();
 
   const {
     register,
@@ -23,7 +24,7 @@ export default function ForgetPassword() {
 
   const onSubmit = (data: ForgotPasswordFormData) => {
     sendResetLink(data.email, {
-      onSuccess: () => reset(), // success pe field clear
+      onSuccess: () => reset(),
     });
   };
 
@@ -58,6 +59,8 @@ export default function ForgetPassword() {
                   <p className="text-error-500 mt-1 text-sm">{errors.email.message}</p>
                 )}
               </div>
+
+              {message && <FormMessage message={message} />}
 
               {/* Button */}
               <div>
