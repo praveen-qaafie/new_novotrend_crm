@@ -232,9 +232,17 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) =
               >
                 <span>{nav.icon}</span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">{nav.name}</span>
+                  <>
+                    <span className="menu-item-text">{nav.name}</span>
+                    <span
+                      className={`ml-auto transition-transform duration-300 ${
+                        openSubmenu?.index === index ? "rotate-180" : "rotate-0"
+                      }`}
+                    >
+                      <ChevronDownIcon />
+                    </span>
+                  </>
                 )}
-                <ChevronDownIcon />
               </button>
             ) : nav.path ? (
               nav.target === "_blank" ? (

@@ -27,7 +27,7 @@ export default function ResetPassword() {
   // Token guard
   useEffect(() => {
     if (!token) {
-      router.push("/forgot-password");
+      router.push("/sign-in");
     }
   }, [token, router]);
 

@@ -13,8 +13,9 @@ import {
   mt5ToWalletSchema,
   walletToMT5Schema,
 } from "@/features/crm/money-transfer/schemas/money-transfer.schemas";
-import { MT5Account, TransferTab } from "@/features/crm/money-transfer/types/money-transfer.types";
+import { TransferTab } from "@/features/crm/money-transfer/types/money-transfer.types";
 import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
+// MT5Account
 
 // Tab config
 const TABS: { id: TransferTab; label: string }[] = [
@@ -30,11 +31,10 @@ const OTP_TYPE_MAP: Record<TransferTab, string> = {
 };
 
 // Helper
-
-function accountLabel(acc: MT5Account) {
-  const prefix = acc.group_name === "MT5AccountCent" ? "¢" : "$";
-  return `${acc.accno} — ${prefix}${acc.amount}`;
-}
+// function accountLabel(acc: MT5Account) {
+//   const prefix = acc.group_name === "MT5AccountCent" ? "¢" : "$";
+//   return `${acc.accno} — ${prefix}${acc.amount}`;
+// }
 
 // Main Component
 export default function AccountSwitchTabs() {
@@ -49,10 +49,7 @@ export default function AccountSwitchTabs() {
 
   // Shared hooks
   const { mt5Accounts, isLoading: accountsLoading } = useMT5Accounts();
-  // const { otpStatus, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
-
   const { otpStatus, otpSentOnce, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
-
   const { transferStatus, errorMessage, successMessage, submitTransfer, reset } = useTransfer();
 
   // Local form state
@@ -65,7 +62,6 @@ export default function AccountSwitchTabs() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Derived
-  // const isOtpSent = otpStatus === "sent";
   const isOtpSent = otpSentOnce;
   const isOtpSending = otpStatus === "sending";
   const isSubmitting = transferStatus === "loading";
@@ -157,7 +153,7 @@ export default function AccountSwitchTabs() {
     } else {
       // WalletToMT5 — MT5 select = toAccount
       const result = walletToMT5Schema.safeParse({
-        mt5accountselect: toAccount, // ← toAccount, fromAccount nahi
+        mt5accountselect: toAccount, // toAccount,
         amount,
         note,
         otp,
@@ -262,7 +258,7 @@ export default function AccountSwitchTabs() {
                   </option>
                   {fromOptions.map((acc) => (
                     <option key={acc.accno} value={acc.accno}>
-                      {accountLabel(acc)}
+                      {acc.accno}
                     </option>
                   ))}
                 </select>
@@ -325,7 +321,7 @@ export default function AccountSwitchTabs() {
                   </option>
                   {toOptions.map((acc) => (
                     <option key={acc.accno} value={acc.accno}>
-                      {accountLabel(acc)}
+                      {acc.accno}
                     </option>
                   ))}
                 </select>
