@@ -54,7 +54,7 @@ export function middleware(request: NextRequest) {
     return withNoCache(NextResponse.redirect(new URL("/sign-in", request.url)));
   }
 
-  // Logged in + public route → dashboard
+  // Logged in + public route, dashboard
   // if (isPublicRoute && token) {
   //   return withNoCache(NextResponse.redirect(new URL("/", request.url)));
   // }
