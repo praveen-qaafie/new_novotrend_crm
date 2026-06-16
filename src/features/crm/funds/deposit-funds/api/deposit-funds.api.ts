@@ -40,6 +40,8 @@ export const depositFundsAddWalletBalance = async (
     },
   });
 
+  console.log("response-add", response);
+
   return response.data;
 };
 

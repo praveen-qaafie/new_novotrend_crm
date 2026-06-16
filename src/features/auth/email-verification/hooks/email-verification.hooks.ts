@@ -3,28 +3,6 @@ import { useRouter } from "next/navigation";
 import { resendOtp, verifyOtp } from "../api/email-verification.api";
 import { useState } from "react";
 
-// export function useVerifyOtp() {
-//   const router = useRouter();
-
-//   return useMutation({
-//     mutationFn: verifyOtp,
-//     onSuccess: (data) => {
-//       const responseData = data?.data;
-//       if (responseData?.status === 200) {
-//         // verify success — token remove
-//         sessionStorage.removeItem("tempVerifyToken");
-//         router.push("/sign-in");
-
-//       } else {
-//         // error component mein handle hoga
-//       }
-//     },
-//     onError: () => {
-//       // interceptor handle karega
-//     },
-//   });
-// }
-
 export function useVerifyOtp() {
   const router = useRouter();
   const [message, setMessage] = useState<{
@@ -36,9 +14,17 @@ export function useVerifyOtp() {
     mutationFn: verifyOtp,
     onSuccess: (data) => {
       const responseData = data?.data;
+      // console.log("res-email", responseData);
       if (responseData?.status === 200) {
         sessionStorage.removeItem("tempVerifyToken");
-        router.push("/sign-in");
+        // router.push("/sign-in");
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 2000);
+        setTimeout(() => {
+          sessionStorage.removeItem("tempVerifyToken");
+          router.push("/sign-in");
+        }, 2000);
       } else {
         setMessage({
           type: "error",
@@ -57,8 +43,7 @@ export function useVerifyOtp() {
   return { ...mutation, message };
 }
 
-
-// Resend OTP 
+// Resend OTP
 export function useResendOtp() {
   const [message, setMessage] = useState<{
     type: "success" | "error";

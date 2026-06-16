@@ -243,16 +243,6 @@ export default function BankDepositForm({ onBack }: BankDepositFormProps) {
             <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
               Amount
             </label>
-
-            {/* <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              placeholder="Enter amount"
-              className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3 text-slate-800 dark:border-slate-700 dark:text-white"
-            /> */}
-
             <input
               type="number"
               name="amount"

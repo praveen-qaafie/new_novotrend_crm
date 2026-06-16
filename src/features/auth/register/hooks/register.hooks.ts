@@ -53,6 +53,9 @@ export function useRegister() {
     mutationFn: (payload: RegisterPayload) => registerUser(payload),
     onSuccess: (data) => {
       const responseData = data?.data;
+     
+      // console.log("responseData", responseData)
+
       if (responseData?.status === 200) {
         const token = responseData?.response?.token;
         if (token) {

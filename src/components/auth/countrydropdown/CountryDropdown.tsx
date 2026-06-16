@@ -21,8 +21,6 @@ export default function CountryDropdown({ value, onChange }: Props) {
     c.country_name.toLowerCase().includes(search.toLowerCase())
   );
 
-  console.log("country_id ", filtered)
-
   return (
     <div className="relative">
       {/* Selected Button */}

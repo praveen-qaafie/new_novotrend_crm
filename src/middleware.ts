@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
 
   // Not logged in
   if (!token) {
-    if (authRoutes.includes(pathname) || tokenBasedRoutes.includes(pathname)) {
+    if (authRoutes.includes(pathname) || tokenBasedRoutes.includes(pathname) || pathname.startsWith("/email-verify") ) {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL("/sign-in", request.url));
@@ -55,8 +55,12 @@ export function middleware(request: NextRequest) {
   }
 
   // Logged in + public route → dashboard
-  if (isPublicRoute && token) {
-    return withNoCache(NextResponse.redirect(new URL("/", request.url)));
+  // if (isPublicRoute && token) {
+  //   return withNoCache(NextResponse.redirect(new URL("/", request.url)));
+  // }
+
+  if (isPublicRoute && token && !pathname.startsWith("/email-verify")) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return withNoCache(NextResponse.next());

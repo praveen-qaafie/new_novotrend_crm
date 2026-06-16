@@ -22,6 +22,8 @@ export default function EmailVerificationOTP() {
   const [token, setToken] = useState<string | null>(null);
 
   const { mutate: verify, isPending: isVerifying, message: verifyMessage } = useVerifyOtp();
+  
+  console.log("verifyMessage",verifyMessage )
   const { mutate: resend, isPending: isResending, message } = useResendOtp();
 
   useEffect(() => {
@@ -32,8 +34,6 @@ export default function EmailVerificationOTP() {
     }
     setToken(storedToken);
   }, [router]);
-
-  // !storedToken
 
   // Auto focus
   useEffect(() => {
