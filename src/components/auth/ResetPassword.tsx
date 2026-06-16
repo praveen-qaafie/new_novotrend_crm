@@ -12,6 +12,7 @@ import {
   ResetPasswordFormData,
 } from "@/features/auth/reset-password/schemas/reset-password.schema";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
+import FormMessage from "@/common/UI/FormMessage";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { mutate: reset, isPending } = useResetPassword();
+  const { mutate: reset, isPending, message } = useResetPassword();
 
   // Token guard
   useEffect(() => {
@@ -117,6 +118,8 @@ export default function ResetPassword() {
                 <p className="text-error-500 mt-1 text-sm">{errors.confirmpassword.message}</p>
               )}
             </div>
+
+            {message && <FormMessage message={message} />}
 
             {/* Submit */}
             <button

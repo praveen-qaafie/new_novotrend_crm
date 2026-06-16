@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import ForgetPassword from "@/components/auth/ForgetPassword";
 
 export const metadata: Metadata = {
-  title: "Next.js SignIn Page |  - Novotrend CRM",
+  title: "ForgotPassword |  - Novotrend CRM",
   description: "Future of global trading Dashboard Template",
 };
 

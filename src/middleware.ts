@@ -8,8 +8,8 @@ const PUBLIC_ROUTES = [
   "/email-verify",
 ];
 
-const authRoutes = ["/sign-in", "/register", "/forgot-password"];
-const tokenBasedRoutes = ["/set-password"];
+const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
+const tokenBasedRoutes = ["/reset-password"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

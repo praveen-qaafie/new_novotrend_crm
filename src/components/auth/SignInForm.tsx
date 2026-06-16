@@ -1,6 +1,5 @@
 "use client";
 
-// import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
@@ -89,8 +88,7 @@ export default function SignInForm() {
 
               {/* Remember me + Forgot */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                </div>
+                <div className="flex items-center gap-3"></div>
                 <Link
                   href="/forgot-password"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400 text-sm"
@@ -116,20 +114,6 @@ export default function SignInForm() {
                     "Sign in"
                   )}
                 </Button>
-                {/* <button
-                  type="submit"
-                  disabled={isPending}
-                  className="disabled:cursor-not-allowed disabled:opacity-70 ..."
-                >
-                  {isPending ? (
-                    <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Signing in...
-                    </span>
-                  ) : (
-                    "Sign in"
-                  )}
-                </button> */}
               </div>
             </div>
           </form>
