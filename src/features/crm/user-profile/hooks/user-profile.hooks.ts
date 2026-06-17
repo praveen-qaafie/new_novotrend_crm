@@ -12,6 +12,7 @@ import {
   UpdatePasswordPayload,
   UpdateProfilePayload,
 } from "../types/user-profile.types";
+import { useLogout } from "@/features/auth/sign-out/hooks/sign-out.hooks";
 
 export function useGetKyc() {
   const query = useQuery({
@@ -41,7 +42,6 @@ export function useSubmitEkyc() {
     mutationFn: (payload: EkycPayload) => submitEkyc(payload),
     onSuccess: (data) => {
       const res = data?.data;
-      console.log("res", res);
       if (res?.status === 200) {
         setMessage({ type: "success", text: res?.result || "Documents submitted successfully" });
         // KYC data refetch karo
@@ -119,13 +119,54 @@ export function useUpdateUserProfile() {
   };
 }
 
-// password update
+// password update/ reset - profile section
+
+// export function useUpdateUserPassword() {
+//   const [message, setMessage] = useState<{
+//     type: "success" | "error";
+//     text: string;
+//   } | null>(null);
+
+//   const mutation = useMutation({
+//     mutationFn: (payload: UpdatePasswordPayload) => updateUserPassword(payload),
+
+//     onSuccess: (data) => {
+//       const res = data?.data;
+
+//       if (res?.status === 200) {
+//         setMessage({
+//           type: "success",
+//           text: res?.result || "Password updated successfully",
+//         });
+//       } else {
+//         setMessage({
+//           type: "error",
+//           text: res?.result || "Password update failed",
+//         });
+//       }
+//     },
+
+//     onError: () => {
+//       setMessage({
+//         type: "error",
+//         text: "Something went wrong. Please try again.",
+//       });
+//     },
+//   });
+
+//   return {
+//     ...mutation,
+//     message,
+//   };
+// }
 
 export function useUpdateUserPassword() {
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
+
+  const { handleLogout } = useLogout();
 
   const mutation = useMutation({
     mutationFn: (payload: UpdatePasswordPayload) => updateUserPassword(payload),
@@ -136,8 +177,12 @@ export function useUpdateUserPassword() {
       if (res?.status === 200) {
         setMessage({
           type: "success",
-          text: res?.result || "Password updated successfully",
+          text: "Password updated successfully. Logging out...",
         });
+
+        setTimeout(() => {
+          handleLogout();
+        }, 2000);
       } else {
         setMessage({
           type: "error",

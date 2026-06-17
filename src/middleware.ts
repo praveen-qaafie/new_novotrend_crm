@@ -18,7 +18,11 @@ export function middleware(request: NextRequest) {
 
   // Not logged in
   if (!token) {
-    if (authRoutes.includes(pathname) || tokenBasedRoutes.includes(pathname) || pathname.startsWith("/email-verify") ) {
+    if (
+      authRoutes.includes(pathname) ||
+      tokenBasedRoutes.includes(pathname) ||
+      pathname.startsWith("/email-verify")
+    ) {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL("/sign-in", request.url));
@@ -68,6 +72,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|otf)).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|otf|pdf)).*)",
   ],
 };

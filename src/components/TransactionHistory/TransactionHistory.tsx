@@ -22,7 +22,7 @@ import { useMT5Accounts } from "@/features/crm/money-transfer/hooks/money-transf
 
 //Constants
 
-const TABS: TransactionTab[] = ["All", "Deposit", "Withdraw", "Transfer"];
+const TABS: TransactionTab[] = ["All Transaction", "Deposit", "Withdraw", "Transfer"];
 const ROWS_OPTIONS = [10, 20, 50, 100];
 
 // Date helper
@@ -165,7 +165,7 @@ export default function TransactionHistory() {
         <div>
           <h2 className="text-2xl font-semibold dark:text-white">Transaction History</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Your deposits and withdrawals will appear here. 
+            Your deposits and withdrawals will appear here.
           </p>
         </div>
 
@@ -240,7 +240,7 @@ export default function TransactionHistory() {
           onChange={(e) => setSelectedAccount(e.target.value)}
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
         >
-          <option value="">{accountsLoading ? "Loading..." : "MT5 Accounts"}</option>
+          <option value="">{accountsLoading ? "Loading..." : "All Accounts"}</option>
           {mt5Accounts.map((acc) => (
             <option key={acc.accno} value={acc.accno}>
               {acc.accno}

@@ -20,7 +20,6 @@ export async function getUserData(): Promise<UserResponse> {
 
 export async function getUserBalanceData(): Promise<UserBalanceDataResponse> {
   const response = await api.post(API_ENDPOINTS.CRM.USER_BALANCE_DATA);
-  console.log("data3", response);
   return response.data;
 }
 

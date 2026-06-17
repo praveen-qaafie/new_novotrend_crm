@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 import {
   addCashDeposit,
   depositFundsAddWalletBalance,
   generateCryptoWallet,
   getBankDetailsApi,
 } from "../api/deposit-funds.api";
-import { useCallback, useEffect, useState } from "react";
 import type { AxiosError } from "axios";
 
 export const useGetBankDetails = () => {
@@ -36,26 +36,37 @@ import type {
 } from "../types/deposit-funds.types";
 
 export const useDepositFundsAddWalletBalance = () => {
-  return useMutation({
-    mutationFn: (payload: DepositFundsPayload) => depositFundsAddWalletBalance(payload),
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
+  const mutation = useMutation({
+    mutationFn: (payload: DepositFundsPayload) => depositFundsAddWalletBalance(payload),
     onSuccess: (response) => {
-      if (response?.data?.status === 200) {
-        // toast.success(response?.data?.result || "Deposit successful");
+      const responseData = response?.data;
+      if (responseData?.status === 200) {
+        setMessage({
+          type: "success",
+          text: responseData?.result || "Deposit successful.",
+        });
       } else {
-        // toast.error(response?.data?.result || "Something went wrong");
+        setMessage({
+          type: "error",
+          text: responseData?.result || "Something went wrong.",
+        });
       }
     },
-
     onError: (error: unknown) => {
       const err = error as AxiosError<{ message?: string }>;
-
-      console.error(
-        "Deposit failed:",
-        err.response?.data?.message || err.message || "Deposit failed"
-      );
+      setMessage({
+        type: "error",
+        text: err.response?.data?.message || err.message || "Deposit failed.",
+      });
     },
   });
+
+  return { ...mutation, message };
 };
 
 // Cash Deposit API hook

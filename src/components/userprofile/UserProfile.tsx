@@ -112,6 +112,7 @@ const UserProfile = () => {
     isPending: passwordUpdating,
     message: passwordMessage,
   } = useUpdateUserPassword();
+  
   const {
     mutate: updateProfile,
     isPending: profileUpdating,
@@ -133,7 +134,7 @@ const UserProfile = () => {
       first_name: "",
       last_name: "",
       phone: "",
-      bio: "",
+      bio: undefined,
       dob: "",
       country: "",
     },
@@ -547,7 +548,7 @@ const UserProfile = () => {
                             {...registerProfile("phone")}
                             type="tel"
                             placeholder="Enter 10-digit number"
-                            maxLength={10}
+                            maxLength={12}
                             className="mt-1 w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-gray-800 outline-none focus:ring-2 focus:ring-indigo-300 dark:border-gray-700 dark:bg-slate-700 dark:text-gray-100"
                           />
                           {profileErrors.phone && (
@@ -567,6 +568,7 @@ const UserProfile = () => {
                             // selected={startDate}
                             selected={startDate ?? undefined}
                             onChange={setStartDate}
+                            maxDate={new Date()}
                             placeholder="Select your date of birth"
                           />
                           {profileErrors.dob && (
@@ -735,14 +737,6 @@ const UserProfile = () => {
                 {kycMessage && <FormMessage message={kycMessage} />}
 
                 <div className="flex flex-col justify-end gap-4 pt-4 sm:flex-row">
-                  {/* <button
-                    type="button"
-                    onClick={handleKycSubmitForm(onKycSubmit)}
-                    disabled={isPending}
-                    className="rounded-lg bg-[#465FFF] px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
-                  >
-                    {isPending ? "Submitting..." : "Submit for Verification"}
-                  </button> */}
                   <button
                     type="button"
                     onClick={handleKycSubmitForm(onKycSubmit)}

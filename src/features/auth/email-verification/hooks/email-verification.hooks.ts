@@ -10,17 +10,49 @@ export function useVerifyOtp() {
     text: string;
   } | null>(null);
 
+  // const mutation = useMutation({
+  //   mutationFn: verifyOtp,
+  //   onSuccess: (data) => {
+  //     const responseData = data?.data;
+  //     // console.log("res-email", responseData);
+  //     if (responseData?.status === 200) {
+  //       sessionStorage.removeItem("tempVerifyToken");
+  //       // router.push("/sign-in");
+  //       setMessage({
+  //         type: "success",
+  //         text: responseData?.result || "Email verified successfully.",
+  //       });
+  //       setTimeout(() => {
+  //         router.push("/sign-in");
+  //       }, 2000);
+  //       setTimeout(() => {
+  //         sessionStorage.removeItem("tempVerifyToken");
+  //         router.push("/sign-in");
+  //       }, 2000);
+  //     } else {
+  //       setMessage({
+  //         type: "error",
+  //         text: responseData?.result || "OTP verification failed. Please try again.",
+  //       });
+  //     }
+  //   },
+  //   onError: () => {
+  //     setMessage({
+  //       type: "error",
+  //       text: "Something went wrong. Please try again.",
+  //     });
+  //   },
+  // });
+
   const mutation = useMutation({
     mutationFn: verifyOtp,
     onSuccess: (data) => {
       const responseData = data?.data;
-      // console.log("res-email", responseData);
       if (responseData?.status === 200) {
-        sessionStorage.removeItem("tempVerifyToken");
-        // router.push("/sign-in");
-        setTimeout(() => {
-          router.push("/sign-in");
-        }, 2000);
+        setMessage({
+          type: "success",
+          text: responseData?.result || "Your account has been created successfully.",
+        });
         setTimeout(() => {
           sessionStorage.removeItem("tempVerifyToken");
           router.push("/sign-in");

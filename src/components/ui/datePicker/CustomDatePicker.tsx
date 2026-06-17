@@ -13,6 +13,7 @@ interface CustomDatePickerProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  maxDate?: Date;
 }
 
 export default function CustomDatePicker({
@@ -22,6 +23,7 @@ export default function CustomDatePicker({
   placeholder = "Select Date",
   disabled = false,
   className = "",
+  maxDate,
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -53,6 +55,8 @@ export default function CustomDatePicker({
               setIsOpen(false);
             }}
             captionLayout="dropdown"
+            disabled={maxDate ? { after: maxDate } : undefined} // future dates disable
+            endMonth={maxDate} // aage navigate nahi hoga
             // fromYear={1990}
             // toYear={2035}
           />

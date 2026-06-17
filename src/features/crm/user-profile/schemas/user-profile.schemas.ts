@@ -40,9 +40,17 @@ export const profileSchema = z.object({
   phone: z
     .string()
     .min(10, "Phone must be 10 digits")
-    .max(10, "Phone must be 10 digits")
+    .max(12, "Phone must be 12 digits")
     .regex(/^[0-9]+$/, "Only numbers allowed"),
-  bio: z.string().max(300, "Bio must be under 300 characters").optional(),
+  // bio: z.string().max(300, "Bio must be under 300 characters").optional(),
+  // bio: z.string().trim().max(300, "Bio must be under 300 characters").optional(),
+  // bio: z.string().trim().max(300, "Bio must be under 300 characters").optional().or(z.literal("")),
+  bio: z
+    .string()
+    .trim()
+    .max(300, "Bio must be under 300 characters")
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
   dob: z.string().min(1, "Date of birth is required"),
   country: z.string().optional(),
 });
@@ -50,13 +58,38 @@ export type ProfileFormData = z.infer<typeof profileSchema>;
 
 // update-password
 
+// export const updatePasswordSchema = z
+//   .object({
+//     current_password: z.string().min(1, "Please enter your current password"),
+
+//     new_password: z.string().min(8, "Password must be at least 8 characters"),
+
+//     confirm_password: z.string().min(1, "Please confirm your new password"),
+//   })
+//   .refine((data) => data.new_password === data.confirm_password, {
+//     message: "Passwords do not match",
+//     path: ["confirm_password"],
+//   });
+
+// export type UpdatePasswordFormData = z.infer<typeof updatePasswordSchema>;
+
 export const updatePasswordSchema = z
   .object({
     current_password: z.string().min(1, "Please enter your current password"),
 
-    new_password: z.string().min(8, "Password must be at least 8 characters"),
+    new_password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&()[\]{}#^+=._-])[A-Za-z\d@$!%*?&()[\]{}#^+=._-]{8,}$/,
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
+      ),
 
     confirm_password: z.string().min(1, "Please confirm your new password"),
+  })
+  .refine((data) => data.current_password !== data.new_password, {
+    message: "New password must be different from your current password",
+    path: ["new_password"],
   })
   .refine((data) => data.new_password === data.confirm_password, {
     message: "Passwords do not match",

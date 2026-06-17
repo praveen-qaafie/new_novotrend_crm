@@ -8,6 +8,7 @@ import { useGetBankDetails } from "@/features/crm/funds/deposit-funds/hooks/depo
 import { useDepositFundsAddWalletBalance } from "@/features/crm/funds/deposit-funds/hooks/deposit-funds.hooks";
 import type { Account } from "@/common/types/account";
 import { depositFundsSchema } from "@/features/crm/funds/deposit-funds/schemas/deposit-funds.schemas";
+import FormMessage from "@/common/UI/FormMessage";
 
 interface BankDepositFormProps {
   onBack: () => void;
@@ -29,7 +30,7 @@ interface FormErrors {
 
 export default function BankDepositForm({ onBack }: BankDepositFormProps) {
   const { bankDetails, isLoading } = useGetBankDetails();
-  const { mutate: depositFunds, isPending } = useDepositFundsAddWalletBalance();
+  const { mutate: depositFunds, isPending, message } = useDepositFundsAddWalletBalance();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     amount: "",
@@ -332,6 +333,8 @@ export default function BankDepositForm({ onBack }: BankDepositFormProps) {
           </div>
         </div>
 
+        {message && <FormMessage message={message} />}
+
         {/* Terms */}
         <div className="text-md leading-relaxed text-slate-500 dark:text-slate-400">
           <div className="flex items-start gap-3">
@@ -360,7 +363,6 @@ export default function BankDepositForm({ onBack }: BankDepositFormProps) {
 
           {errors.acceptTerms && <p className="mt-2 text-sm text-red-500">{errors.acceptTerms}</p>}
         </div>
-
         {/* Buttons */}
         <div className="flex flex-col justify-end gap-3 border-t border-slate-200 pt-4 sm:flex-row dark:border-slate-700">
           <button

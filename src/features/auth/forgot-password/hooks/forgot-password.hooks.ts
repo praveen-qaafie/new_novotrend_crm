@@ -12,8 +12,6 @@ export function useForgotPassword() {
     mutationFn: (email: string) => forgotPassword(email),
     onSuccess: (data) => {
       const responseData = data?.data?.data;
-      console.log("responseData-11", responseData);
-      console.log("responseData?.status == 200,12", responseData?.status === 200)
       if (responseData?.status == 200) {
         console.log("responseData?.status === 200", responseData?.status === 200)
         setMessage({

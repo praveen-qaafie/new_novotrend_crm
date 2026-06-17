@@ -23,7 +23,6 @@ export default function EmailVerificationOTP() {
 
   const { mutate: verify, isPending: isVerifying, message: verifyMessage } = useVerifyOtp();
   
-  console.log("verifyMessage",verifyMessage )
   const { mutate: resend, isPending: isResending, message } = useResendOtp();
 
   useEffect(() => {

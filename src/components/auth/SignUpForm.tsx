@@ -200,13 +200,23 @@ export default function SignUpForm() {
             <div className="flex items-center gap-3">
               <Controller
                 name="inputchecked"
-                control={control} // ← yeh
+                control={control}
                 render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} />}
               />
+
+              {/* /pdf/PrivacyPolicy.pdf */}
+
               <p className="text-sm leading-snug text-gray-500 dark:text-gray-400">
-                {
-                  "By creating an account, you agree to the Privacy Policy and to receive economic and marketing communications from Novotrend."
-                }
+                By creating an account, you agree to the{" "}
+                <a
+                  href="/pdf/PrivacyPolicy.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline dark:text-blue-400"
+                >
+                  Privacy Policy
+                </a>{" "}
+                and to receive economic and marketing communications from Novotrend.
               </p>
             </div>
             {errors.inputchecked && (
