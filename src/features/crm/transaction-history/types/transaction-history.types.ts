@@ -1,4 +1,4 @@
-export type TransactionTab = "All Transaction" | "Deposit" | "Withdraw" | "Transfer";
+export type TransactionTab = "All" | "Deposit" | "Withdraw" | "Transfer";
 
 export type FetchStatus = "idle" | "loading" | "error";
 

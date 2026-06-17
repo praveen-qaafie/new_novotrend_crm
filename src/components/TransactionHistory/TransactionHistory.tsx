@@ -22,7 +22,7 @@ import { useMT5Accounts } from "@/features/crm/money-transfer/hooks/money-transf
 
 //Constants
 
-const TABS: TransactionTab[] = ["All Transaction", "Deposit", "Withdraw", "Transfer"];
+const TABS: TransactionTab[] = ["All", "Deposit", "Withdraw", "Transfer"];
 const ROWS_OPTIONS = [10, 20, 50, 100];
 
 // Date helper
@@ -68,7 +68,7 @@ export default function TransactionHistory() {
   const { data, status, errorMessage, fetchData } = useTransactionHistory();
   const { mt5Accounts, isLoading: accountsLoading } = useMT5Accounts();
 
-  const [activeTab, setActiveTab] = useState<TransactionTab>("All");
+  const [activeTab, setActiveTab] = useState<TransactionTab>("All"); // all Transaction 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAccount, setSelectedAccount] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
