@@ -7,10 +7,6 @@ interface ResetPasswordPayload {
   token: string;
 }
 
-// export async function resetPassword(payload: ResetPasswordPayload): Promise<void> {
-//   await api.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, payload);
-// }
-
 export async function resetPassword(payload: ResetPasswordPayload) {
   const response = await api.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, payload);
   return response;

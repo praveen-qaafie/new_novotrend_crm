@@ -68,7 +68,7 @@ export default function TransactionHistory() {
   const { data, status, errorMessage, fetchData } = useTransactionHistory();
   const { mt5Accounts, isLoading: accountsLoading } = useMT5Accounts();
 
-  const [activeTab, setActiveTab] = useState<TransactionTab>("All"); // all Transaction 
+  const [activeTab, setActiveTab] = useState<TransactionTab>("All"); // all Transaction
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAccount, setSelectedAccount] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

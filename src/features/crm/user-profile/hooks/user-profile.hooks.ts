@@ -42,6 +42,7 @@ export function useSubmitEkyc() {
     mutationFn: (payload: EkycPayload) => submitEkyc(payload),
     onSuccess: (data) => {
       const res = data?.data;
+      console.log("res-KYC", res); 
       if (res?.status === 200) {
         setMessage({ type: "success", text: res?.result || "Documents submitted successfully" });
         // KYC data refetch karo

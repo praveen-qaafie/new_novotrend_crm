@@ -125,7 +125,7 @@ export default function TradingHistory() {
     [selectedAccount, orderType, profitLoss, startDate, endDate, fetchDeals]
   );
 
-  // Sorting 
+  // Sorting
   const handleSort = (field: SortField) => {
     if (!field) return;
     if (sortField === field) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -228,7 +228,7 @@ export default function TradingHistory() {
             <option value="">{accountsLoading ? "Loading..." : "All Accounts"}</option>
             {mt5Accounts.map((acc) => (
               <option key={acc.accno} value={acc.accno}>
-                {acc.accno} — {acc.group_name === "Cent" ? `¢${acc.amount}` : `$${acc.amount}`}
+                {acc.accno}
               </option>
             ))}
           </select>
