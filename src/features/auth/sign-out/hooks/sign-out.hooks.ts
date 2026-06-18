@@ -26,7 +26,6 @@ export function useLogout() {
       localStorage.setItem("logout-event", Date.now().toString());
 
       document.body.style.opacity = "1";
-
       router.replace("/sign-in");
     }
   }, [router]);

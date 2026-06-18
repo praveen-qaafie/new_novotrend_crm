@@ -2,8 +2,18 @@ import { z } from "zod";
 
 export const openAccountSchema = z.object({
   nickname: z.string().min(2, "Nick name at least 2 characters"),
-  mainpassword: z.string().min(6, "Main password at least 6 characters"),
-  investorpassword: z.string().min(6, "Investor password at least 6 characters"),
+  mainpassword: z
+    .string()
+    .min(
+      8,
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+    ),
+  investorpassword: z
+    .string()
+    .min(
+      8,
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+    ),
 });
 
 export type OpenAccountFormData = z.infer<typeof openAccountSchema>;
@@ -13,8 +23,10 @@ export type OpenAccountFormData = z.infer<typeof openAccountSchema>;
 export const changePasswordSchema = z
   .object({
     passwordtype: z.enum(["main", "investor", "both"]),
-    mainpassword: z.string().optional(),
-    investorpassword: z.string().optional(),
+    // mainpassword: z.string().optional(),
+    // investorpassword: z.string().optional(),
+    mainpassword: z.string(),
+    investorpassword: z.string(),
   })
   .superRefine((data, ctx) => {
     if ((data.passwordtype === "main" || data.passwordtype === "both") && !data.mainpassword) {

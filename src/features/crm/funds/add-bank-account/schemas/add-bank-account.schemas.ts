@@ -1,21 +1,36 @@
 import { z } from "zod";
 
-export const addBankSchema = z.object({
-  bankname: z.string().min(2, "Bank name is required"),
+export const bankAccountSchema = z.object({
+  bankname: z
+    .string()
+    .min(1, "Bank name is required")
+    .min(3, "Bank name must be at least 3 characters"),
 
-  accname: z.string().min(2, "Bank holder name is required"),
+  accname: z
+    .string()
+    .min(1, "Account holder name is required")
+    .min(3, "Bank holder name must be at least 3 characters"),
 
   accno: z
     .string()
-    .min(8, "Account number must be at least 8 digits")
-    .max(20, "Account number is too long")
-    .regex(/^\d+$/, "Only numbers are allowed"),
+    .min(1, "Account number is required")
+    .regex(/^\d+$/, "Only digits allowed")
+    .min(9, "Account number must be at least 9 digits"),
 
-  ifsc: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code"),
+  ifsc: z
+    .string()
+    .min(1, "IFSC code is required")
+    .regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC format (e.g., HDFC0001234)"),
 
-  iban_number: z.string().min(10, "IBAN number is required"),
+  iban_number: z
+    .string()
+    .min(1, "IBAN number is required")
+    .min(15, "IBAN must be at least 15 characters"),
 
-  bankaddress: z.string().min(5, "Bank address is required"),
+  bankaddress: z
+    .string()
+    .min(1, "Bank address is required")
+    .min(15, "Bank address must be at least 15 characters long"),
 });
 
-export type AddBankFormData = z.infer<typeof addBankSchema>;
+export type BankAccountFormData = z.infer<typeof bankAccountSchema>;

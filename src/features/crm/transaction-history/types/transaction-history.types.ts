@@ -15,12 +15,12 @@ export interface AllTransaction {
 export interface DepositTransaction {
   id: number;
   date: string;
-  amount: string;
+  amount: number;
   payment_type: string;
   req_image?: string;
+  req_remark?: string;
   note?: string;
   status: string;
-  remark?: string;
 }
 
 export interface WithdrawTransaction {
@@ -28,7 +28,7 @@ export interface WithdrawTransaction {
   date: string;
   amount: string;
   withdraw_type: string;
-  withdraw_type_details?: string;
+  withdraw_type_details: string;
   status: string;
   remark?: string;
 }
@@ -57,13 +57,14 @@ export interface Transaction {
   debit?: number;
   balance?: number;
   type?: string;
-  receipt?: string;
+  req_image?: string;
   note?: string;
   remark?: string;
   withdraw_type?: string;
   withdraw_type_details?: string;
+  payment_type?: string;
   from?: string;
-  amount?: string;
+  amount?: number;
   to?: string;
   status?: string;
 }

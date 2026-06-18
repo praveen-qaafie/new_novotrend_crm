@@ -38,6 +38,8 @@ export default function AccountMain() {
       sortOrder === "Newest" ? b.accno.localeCompare(a.accno) : a.accno.localeCompare(b.accno)
     );
 
+  // console.log("filteredAccounts", filteredAccounts);
+
   const toggleExpand = (id: string) => {
     setExpanded((prev) => (prev === id ? null : id));
   };
@@ -168,7 +170,7 @@ export default function AccountMain() {
                       <h2 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
                         {Number(account.balance).toLocaleString()}{" "}
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          USD
+                          {account.group?.toLowerCase().includes("cent") ? "USC" : "USD"}
                         </span>
                       </h2>
                     </div>
@@ -269,7 +271,6 @@ export default function AccountMain() {
       )}
 
       {/* Modal */}
-      {/* <AccountModal type={modalType} onClose={() => setModalType(null)} /> */}
       <AccountModal
         type={modalType}
         onClose={() => setModalType(null)}

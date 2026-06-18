@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import commissionimg from "../../../public/images/grid-image/commissionbank.jpg";
+import commissionimg from "../../../public/images/grid-image/commissionbank1.jpg";
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
@@ -34,7 +34,6 @@ const partnerLevels = [
 ];
 
 export default function CommissionCard({ amount }: CommissionCardProps) {
-
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -48,16 +47,20 @@ export default function CommissionCard({ amount }: CommissionCardProps) {
 
           {/* Text section */}
           <div>
-            <p className="text-center font-medium text-gray-600 dark:text-white/90">Total Commission </p>
+            <p className="text-center font-medium text-gray-600 dark:text-white/90">
+              Total Commission{" "}
+            </p>
 
-            <h2 className="mt-2 text-center text-3xl font-semibold dark:text-white/90">${amount}</h2>
+            <h2 className="mt-2 text-center text-3xl font-semibold dark:text-white/90">
+              ${amount}
+            </h2>
           </div>
         </div>
 
         <button
           type="button"
           onClick={() => setOpenModal(true)}
-          className="mt-auto w-full rounded-xl bg-indigo-500 py-3 font-medium text-white transition hover:bg-indigo-600 dark:text-white/90 "
+          className="mt-auto w-full rounded-xl bg-indigo-500 py-3 font-medium text-white transition hover:bg-indigo-600 dark:text-white/90"
         >
           Partner Levels
         </button>
@@ -70,7 +73,7 @@ export default function CommissionCard({ amount }: CommissionCardProps) {
             {/* Close Button */}
             <button
               onClick={() => setOpenModal(false)}
-              className="absolute top-5 right-5 rounded-full p-2 text-gray-500 transition bg-gray-100 hover:bg-gray-200"
+              className="absolute top-5 right-5 rounded-full bg-gray-100 p-2 text-gray-500 transition hover:bg-gray-200"
             >
               <X size={18} />
             </button>
@@ -88,7 +91,6 @@ export default function CommissionCard({ amount }: CommissionCardProps) {
                   className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 transition hover:border-indigo-200 hover:bg-indigo-50/50"
                 >
                   <div className="flex items-center gap-3">
-
                     <p className="text-lg font-medium text-gray-800">{item.level}</p>
                   </div>
 

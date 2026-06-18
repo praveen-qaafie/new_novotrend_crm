@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Upload } from "lucide-react";
 import Image from "next/image";
 import IdCard from "../../../../public/images/cards/dummy.webp";
@@ -10,15 +10,10 @@ import {
   useAddUserBank,
   useGetUserBankDetails,
 } from "@/features/crm/funds/add-bank-account/hooks/add-bank-account.hook";
-
-interface FormDataType {
-  bankname: string;
-  accname: string;
-  accno: string;
-  ifsc: string;
-  iban_number: string;
-  bankaddress: string;
-}
+import {
+  BankAccountFormData,
+  bankAccountSchema,
+} from "@/features/crm/funds/add-bank-account/schemas/add-bank-account.schemas";
 
 interface FormErrors {
   bankname?: string;
@@ -33,8 +28,19 @@ export default function NewAccount() {
   const [preview, setPreview] = useState<string | null>(IdCard.src);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [bankStatus, setBankStatus] = useState("Not Submit");
+  const [isEdited, setIsEdited] = useState(false);
 
-  const [formData, setFormData] = useState<FormDataType>({
+  const [formData, setFormData] = useState<BankAccountFormData>({
+    bankname: "",
+    accname: "",
+    accno: "",
+    ifsc: "",
+    iban_number: "",
+    bankaddress: "",
+  });
+
+  // Original data snapshot for dirty check
+  const originalData = useRef<BankAccountFormData>({
     bankname: "",
     accname: "",
     accno: "",
@@ -45,81 +51,96 @@ export default function NewAccount() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const { bankDetails, isLoading, refetch } = useGetUserBankDetails();
-
   const { mutate: addUserBank, isPending, message } = useAddUserBank();
 
   useEffect(() => {
     if (bankDetails) {
-      setFormData({
+      const populated: BankAccountFormData = {
         bankname: bankDetails.bankname || "",
         accname: bankDetails.accholder || "",
         accno: bankDetails.accno || "",
         ifsc: bankDetails.ifsc || "",
         iban_number: bankDetails.iban || "",
         bankaddress: bankDetails.kyc_bank_address || "",
-      });
+      };
+
+      setFormData(populated);
+      originalData.current = populated;
 
       if (bankDetails.image) {
         setPreview(bankDetails.image);
       }
 
       setBankStatus(bankDetails.status || "Not Submit");
+      setIsEdited(false);
     }
   }, [bankDetails]);
 
-  const validateForm = () => {
-    const newErrors: FormErrors = {};
+  // Dirty check — compare current formData with original snapshot
+  useEffect(() => {
+    const isDirty = (Object.keys(formData) as (keyof BankAccountFormData)[]).some(
+      (key) => formData[key] !== originalData.current[key]
+    );
 
-    if (!formData.bankname.trim()) {
-      newErrors.bankname = "Bank name is required";
+    setIsEdited(isDirty || selectedFile !== null);
+  }, [formData, selectedFile]);
+
+  const validateForm = (): boolean => {
+    const result = bankAccountSchema.safeParse({
+      ...formData,
+      ifsc: formData.ifsc.toUpperCase(),
+    });
+
+    if (result.success) {
+      setErrors({});
+      return true;
     }
 
-    if (!formData.accname.trim()) {
-      newErrors.accname = "Account holder name is required";
-    }
+    const fieldErrors: FormErrors = {};
+    const flattened = result.error.flatten().fieldErrors;
 
-    if (!formData.accno.trim()) {
-      newErrors.accno = "Account number is required";
-    } else if (!/^\d+$/.test(formData.accno)) {
-      newErrors.accno = "Only digits allowed";
-    }
+    (Object.keys(flattened) as (keyof FormErrors)[]).forEach((field) => {
+      const msgs = flattened[field];
+      if (msgs && msgs.length > 0) {
+        fieldErrors[field] = msgs[0];
+      }
+    });
 
-    if (!formData.ifsc.trim()) {
-      newErrors.ifsc = "IFSC code is required";
-    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(formData.ifsc.toUpperCase())) {
-      newErrors.ifsc = "Invalid IFSC format";
-    }
-
-    if (!formData.iban_number.trim()) {
-      newErrors.iban_number = "IBAN number is required";
-    }
-
-    if (!formData.bankaddress.trim()) {
-      newErrors.bankaddress = "Bank address is required";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
+    setErrors(fieldErrors);
+    return false;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    let finalValue = value;
 
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+    if (name === "accname") {
+      finalValue = value.replace(/[^A-Za-z ]/g, "");
+    }
+
+    if (name === "bankname") {
+      finalValue = value.replace(/[0-9]/g, "");
+    }
+
+    if (name === "accno") {
+      finalValue = value.replace(/[^0-9]/g, "");
+    }
+
+    if (name === "ifsc") {
+      finalValue = value.toUpperCase();
+    }
+
+    if (name === "iban_number") {
+      finalValue = value.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
@@ -133,33 +154,79 @@ export default function NewAccount() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     addUserBank(
       {
         ...formData,
+        ifsc: formData.ifsc.toUpperCase(),
         kyc_bank_image: selectedFile,
         status: "Pending",
       },
       {
         onSuccess: () => {
           refetch();
+          setIsEdited(false);
+          originalData.current = { ...formData, ifsc: formData.ifsc.toUpperCase() };
         },
       }
     );
   };
 
+  // Field config for clean rendering
+  const fields: {
+    name: keyof BankAccountFormData;
+    label: string;
+    placeholder: string;
+    inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+    pattern?: string;
+  }[] = [
+    {
+      name: "bankname",
+      label: "Bank Name",
+      inputMode: "text",
+      placeholder: "e.g. HDFC Bank",
+    },
+    {
+      name: "accname",
+      label: "Account Holder Name",
+      inputMode: "text",
+      placeholder: "e.g. Rahul Sharma",
+    },
+    {
+      name: "accno",
+      label: "Account Number",
+      placeholder: "e.g. 123456789",
+      inputMode: "numeric",
+      pattern: "[0-9]*",
+    },
+    {
+      name: "ifsc",
+      label: "IFSC Code",
+      placeholder: "e.g. HDFC0001234",
+    },
+    {
+      name: "iban_number",
+      label: "IBAN Number",
+      placeholder: "e.g. IN00HDFC0001234567890",
+    },
+    {
+      name: "bankaddress",
+      label: "Bank Address",
+      placeholder: "e.g. 12, MG Road, Bengaluru - 560001",
+    },
+  ];
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10 dark:from-slate-900 dark:to-slate-800">
       <div className="w-full rounded-2xl border border-slate-200 bg-white p-8 shadow-xl md:p-10 dark:border-slate-700 dark:bg-slate-900">
         {/* Header */}
+
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-2xl font-semibold text-slate-800 dark:text-white">
               Add New Bank Account
             </h2>
-
             <p className="mt-1 text-slate-500 dark:text-slate-400">
               Enter your bank details carefully and upload your proof below.
             </p>
@@ -185,99 +252,55 @@ export default function NewAccount() {
           </div>
         </div>
 
+        {/* Message */}
+        {message && <FormMessage message={message} />}
+
+        <br />
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Grid Inputs */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {/* Bank Name */}
-            <div>
-              <input
-                type="text"
-                name="bankname"
-                value={formData.bankname}
-                onChange={handleChange}
-                placeholder="Bank Name"
-                className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3"
-              />
-              {errors.bankname && <p className="mt-1 text-sm text-red-500">{errors.bankname}</p>}
-            </div>
-
-            {/* Holder Name */}
-            <div>
-              <input
-                type="text"
-                name="accname"
-                value={formData.accname}
-                onChange={handleChange}
-                placeholder="Bank Holder Name"
-                className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3"
-              />
-              {errors.accname && <p className="mt-1 text-sm text-red-500">{errors.accname}</p>}
-            </div>
-
-            {/* Account Number */}
-            <div>
-              <input
-                type="text"
-                name="accno"
-                value={formData.accno}
-                onChange={handleChange}
-                placeholder="Account Number"
-                className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3"
-              />
-              {errors.accno && <p className="mt-1 text-sm text-red-500">{errors.accno}</p>}
-            </div>
-
-            {/* IFSC */}
-            <div>
-              <input
-                type="text"
-                name="ifsc"
-                value={formData.ifsc}
-                onChange={handleChange}
-                placeholder="IFSC Code"
-                className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3"
-              />
-              {errors.ifsc && <p className="mt-1 text-sm text-red-500">{errors.ifsc}</p>}
-            </div>
-
-            {/* IBAN */}
-            <div>
-              <input
-                type="text"
-                name="iban_number"
-                value={formData.iban_number}
-                onChange={handleChange}
-                placeholder="IBAN Number"
-                className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3"
-              />
-              {errors.iban_number && (
-                <p className="mt-1 text-sm text-red-500">{errors.iban_number}</p>
-              )}
-            </div>
-
-            {/* Address */}
-            <div>
-              <input
-                type="text"
-                name="bankaddress"
-                value={formData.bankaddress}
-                onChange={handleChange}
-                placeholder="Bank Address"
-                className="w-full rounded-lg border border-slate-300 bg-transparent px-4 py-3"
-              />
-              {errors.bankaddress && (
-                <p className="mt-1 text-sm text-red-500">{errors.bankaddress}</p>
-              )}
-            </div>
+            {fields.map(({ name, label, placeholder, inputMode, pattern }) => (
+              <div key={name} className="flex flex-col gap-1">
+                <label
+                  htmlFor={name}
+                  className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >
+                  {label}
+                  <span className="ml-1 text-red-500">*</span>
+                </label>
+                <input
+                  id={name}
+                  type="text"
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  placeholder={placeholder}
+                  inputMode={inputMode}
+                  pattern={pattern}
+                  autoComplete="off"
+                  className={`w-full rounded-lg border bg-transparent px-4 py-3 text-sm transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+                    errors[name]
+                      ? "border-red-400 focus:ring-red-400"
+                      : "border-slate-300 dark:border-slate-600"
+                  } dark:text-white dark:placeholder-slate-500`}
+                />
+                {errors[name] && <p className="mt-0.5 text-xs text-red-500">{errors[name]}</p>}
+              </div>
+            ))}
           </div>
 
           {/* Upload */}
-          <div>
-            <div className="cursor-pointer rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6">
-              <label className="flex flex-col items-center gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Bank Proof Image
+            </label>
+            <div className="cursor-pointer rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 transition-colors hover:border-indigo-400 hover:bg-indigo-50/30 dark:border-slate-600 dark:bg-slate-800">
+              <label className="flex cursor-pointer flex-col items-center gap-3">
                 <Upload className="h-6 w-6 text-indigo-600" />
-                <span className="text-sm font-medium">Upload Bank Proof Image</span>
-
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  {selectedFile ? selectedFile.name : "Click to upload (JPG, JPEG, PNG — max 2MB)"}
+                </span>
                 <input
                   type="file"
                   className="hidden"
@@ -290,7 +313,7 @@ export default function NewAccount() {
 
           {/* Preview */}
           {preview && (
-            <div className="overflow-hidden rounded-xl border border-slate-200">
+            <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
               <div className="relative h-56 w-full sm:h-64">
                 <Image
                   src={preview}
@@ -302,15 +325,16 @@ export default function NewAccount() {
             </div>
           )}
 
-          {/* Message */}
-          {message && <FormMessage message={message} />}
-
           {/* Submit */}
           <div className="flex justify-center pt-2">
             <button
               type="submit"
-              disabled={isPending}
-              className="rounded-lg bg-indigo-600 px-8 py-3 text-sm font-semibold text-white"
+              disabled={isPending || !isEdited}
+              className={`rounded-lg px-8 py-3 text-sm font-semibold text-white transition-all ${
+                isPending || !isEdited
+                  ? "cursor-not-allowed bg-indigo-300 dark:bg-indigo-800"
+                  : "bg-indigo-600 hover:bg-indigo-700 active:scale-95"
+              }`}
             >
               {isPending ? "Processing..." : "Add Account"}
             </button>

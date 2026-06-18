@@ -25,6 +25,8 @@ export async function fetchTransactionHistory(
     mt5account,
   });
 
+  // console.log("res-backend", res);
+
   const raw = res.data.data.response;
   if (!raw?.length) return [];
 
@@ -44,20 +46,21 @@ export async function fetchTransactionHistory(
       return (raw as DepositTransaction[]).map((t, i) => ({
         id: t.id ?? i,
         date: t.date,
-        details: t.payment_type,
-        credit: Number(t.amount) || 0,
-        receipt: t.req_image,
+        amount: t.amount,
+        payment_type: t.payment_type,
+        req_image: t.req_image,
         note: t.note,
+        req_remark: t.req_remark,
         status: t.status,
-        remark: t.remark,
       }));
 
     case "Withdraw":
       return (raw as WithdrawTransaction[]).map((t, i) => ({
         id: t.id ?? i,
         date: t.date,
-        debit: Number(t.amount) || 0,
-        withdrawType: t.withdraw_type_details || t.withdraw_type,
+        amount: Number(t.amount) || 0,
+        withdraw_type: t.withdraw_type,
+        withdraw_type_details:t.withdraw_type_details,
         status: t.status,
         remark: t.remark,
       }));

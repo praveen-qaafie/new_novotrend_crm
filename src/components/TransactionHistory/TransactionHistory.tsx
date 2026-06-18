@@ -54,9 +54,9 @@ const AllRows = ({ rows }: { rows: Transaction[] }) => (
           <td className="px-4 py-3">{i + 1}</td>
           <td className="px-4 py-3 whitespace-nowrap">{t.date}</td>
           <td className="px-4 py-3">{t.details ?? "-"}</td>
-          <td className="px-4 py-3">{t.credit ? t.credit.toFixed(2) : "-"}</td>
-          <td className="px-4 py-3">{t.debit ? t.debit.toFixed(2) : "-"}</td>
-          <td className="px-4 py-3">{t.balance?.toFixed(2) ?? "-"}</td>
+          <td className="px-4 py-3">{t.credit}</td>
+          <td className="px-4 py-3">{t.debit}</td>
+          <td className="px-4 py-3">{t.balance}</td>
         </tr>
       ))
     )}
@@ -143,6 +143,8 @@ export default function TransactionHistory() {
   //  Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
   const currentRows = filtered.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  // console.log("currentRows", currentRows);
 
   //  Date label
   const dateLabel = useMemo(() => {

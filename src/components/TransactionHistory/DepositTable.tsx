@@ -20,16 +20,15 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
           <td className="px-4 py-3">{t.amount ?? "-"}</td>
           <td className="px-4 py-3">
             <span className="rounded-full border border-green-200 bg-green-100 px-3 py-[3px] text-xs font-semibold text-green-700">
-              Deposit
+              {t.payment_type ?? "-"}
             </span>
           </td>
-
-          <td className="px-4 py-3">
-            {t.receipt ? (
+          <td className="flex items-center justify-center px-4 py-3">
+            {t.req_image ? (
               <Image
-                src={t.receipt}
+                src={t.req_image}
                 className="h-10 w-10 cursor-pointer rounded"
-                onClick={() => window.open(t.receipt, "_blank")}
+                onClick={() => window.open(t.req_image, "_blank")}
                 height={40}
                 width={40}
                 alt="Receipt"
@@ -38,7 +37,7 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
               "-"
             )}
           </td>
-          <td className="px-4 py-3">{t.note ?? "-"}</td>
+          <td className="px-4 py-3">{t.note || "-"}</td>
           <td className="px-4 py-3">
             <span
               className={`rounded-full px-3 py-1 text-xs ${
