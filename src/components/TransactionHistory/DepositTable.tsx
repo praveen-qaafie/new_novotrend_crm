@@ -51,7 +51,7 @@ const DepositTable = ({ rows }: { rows: Transaction[] }) => (
               {t.status}
             </span>
           </td>
-          <td className="px-4 py-3">{t.remark ?? "-"}</td>
+          <td className="px-4 py-3">{t.req_remark ?? "-"}</td>
         </tr>
       ))
     )}

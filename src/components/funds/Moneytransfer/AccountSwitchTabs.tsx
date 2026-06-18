@@ -15,7 +15,6 @@ import {
 } from "@/features/crm/money-transfer/schemas/money-transfer.schemas";
 import { TransferTab } from "@/features/crm/money-transfer/types/money-transfer.types";
 import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
-// MT5Account
 
 // Tab config
 const TABS: { id: TransferTab; label: string }[] = [

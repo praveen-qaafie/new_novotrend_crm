@@ -2,7 +2,7 @@ export type TransferTab = "MT5ToMT5" | "MT5ToWallet" | "WalletToMT5";
 
 export type TransferStatus = "idle" | "loading" | "success" | "error";
 
-// ── MT5 Account (common API response) ────────────────────────────────────────
+//  MT5 Account (common API response)
 export interface MT5Account {
   group_name: string;
   amount: number;
@@ -11,7 +11,7 @@ export interface MT5Account {
   accno: string;
 }
 
-// ── Request payloads ──────────────────────────────────────────────────────────
+// Request payloads
 export interface MT5ToWalletRequest {
   mt5accountselect: string;
   amount: string;
@@ -34,13 +34,13 @@ export interface MT5ToMT5Request {
   otp: string;
 }
 
-// ── API response (common shape) ───────────────────────────────────────────────
+// API response (common shape)
 export interface TransferApiResponse {
   status: number;
   result: string;
 }
 
-// ── Hook return ───────────────────────────────────────────────────────────────
+// Hook return
 export interface UseTransferState {
   transferStatus: TransferStatus;
   errorMessage: string;
@@ -51,13 +51,13 @@ export interface UseTransferActions {
   submitTransfer: (
     payload: MT5ToWalletRequest | WalletToMT5Request | MT5ToMT5Request,
     tab: TransferTab
-  ) => Promise<void>;
+  ) => void;
   reset: () => void;
 }
 
 export type UseTransferReturn = UseTransferState & UseTransferActions;
 
-// ── useMT5Accounts hook return ────────────────────────────────────────────────
+// useMT5Accounts hook return
 export interface UseMT5AccountsReturn {
   mt5Accounts: MT5Account[];
   isLoading: boolean;

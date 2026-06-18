@@ -166,6 +166,7 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
 
           if (status === 200) {
             queryClient.invalidateQueries({ queryKey: ["dashboard", "stats"] });
+            queryClient.invalidateQueries({ queryKey: ["accList"] });
             setLocalMessage({
               type: "success",
               text: resultMsg || "Nickname updated successfully",
@@ -307,7 +308,6 @@ export default function AccountModal({ type, onClose, mt5id, nickname }: Account
                 another request until the current request has been approved.
               </div>
             )}
-
 
             {/* API response — animated green/red */}
             <div

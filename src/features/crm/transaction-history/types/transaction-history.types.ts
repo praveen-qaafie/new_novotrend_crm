@@ -60,6 +60,7 @@ export interface Transaction {
   req_image?: string;
   note?: string;
   receipt?: string;
+  req_remark?: string;
   remark?: string;
   withdraw_type?: string;
   withdraw_type_details?: string;
