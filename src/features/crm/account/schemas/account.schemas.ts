@@ -23,28 +23,27 @@ export type OpenAccountFormData = z.infer<typeof openAccountSchema>;
 export const changePasswordSchema = z
   .object({
     passwordtype: z.enum(["main", "investor", "both"]),
-    // mainpassword: z.string().optional(),
-    // investorpassword: z.string().optional(),
-    mainpassword: z.string(),
-    investorpassword: z.string(),
+    mainpassword: z.string().optional(),
+    investorpassword: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if ((data.passwordtype === "main" || data.passwordtype === "both") && !data.mainpassword) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Please enter your main password",
-        path: ["mainpassword"],
-      });
+    if (data.passwordtype === "main" || data.passwordtype === "both") {
+      if (!data.mainpassword || data.mainpassword.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please enter your main password",
+          path: ["mainpassword"],
+        });
+      }
     }
-    if (
-      (data.passwordtype === "investor" || data.passwordtype === "both") &&
-      !data.investorpassword
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Investor password required",
-        path: ["investorpassword"],
-      });
+    if (data.passwordtype === "investor" || data.passwordtype === "both") {
+      if (!data.investorpassword || data.investorpassword.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Investor password required",
+          path: ["investorpassword"],
+        });
+      }
     }
   });
 

@@ -139,7 +139,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
       name: "Team Support",
       subItems: [
         { name: "Query Support", path: "/support/query" },
-        { name: "Chat Support", path: "/support/chat-support" },
+        // { name: "Chat Support", path: "/support/chat-support" },
         { name: "All Query", path: "/support/querystatus" },
       ],
     },
