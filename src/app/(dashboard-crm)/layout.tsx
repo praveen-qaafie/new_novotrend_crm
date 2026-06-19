@@ -21,13 +21,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       ? "lg:ml-[290px]"
       : "lg:ml-[90px]";
 
-  const { user } = useUserBalanceData();
+  const { user, isLoading  } = useUserBalanceData();
   const isIB: number | string = user?.user_activated_for_ib ?? 0;
 
   return (
     <div className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}
-      <AppSidebar isIB={isIB} onBecomePartnerClick={() => setOpenPartnerModal(true)} />
+      <AppSidebar
+        isIB={isIB}
+        onBecomePartnerClick={() => setOpenPartnerModal(true)}
+        isIBLoading={isLoading}
+      />
       <Backdrop />
       {/* Main Content Area */}
       <div className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}>

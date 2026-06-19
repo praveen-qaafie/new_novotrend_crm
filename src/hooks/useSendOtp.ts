@@ -6,6 +6,8 @@ import { useState, useCallback, useRef } from "react";
 interface SendOtpParams {
   amount: string;
   otp_type: string;
+  mt5_id?: string; // ✅ optional
+  mt5_receiverid?: string; // ✅ optional
 }
 
 interface UseSendOtpReturn {
@@ -44,14 +46,13 @@ export function useSendOtp(): UseSendOtpReturn {
         setOtpStatus("idle");
         setOtpMessage("");
         setOtpError("");
-        // ✅ otpSentOnce reset NAHI hoga — OTP field dikhti rahegi
       }, DISMISS_DURATION[type]);
     },
     [clearTimer]
   );
 
   const sendOtp = useCallback(
-    async ({ amount, otp_type }: SendOtpParams) => {
+    async ({ amount, otp_type, mt5_id = "", mt5_receiverid = "" }: SendOtpParams) => {
       clearTimer();
       setOtpStatus("sending");
       setOtpMessage("");
@@ -61,8 +62,8 @@ export function useSendOtp(): UseSendOtpReturn {
         const res = await api.post(API_ENDPOINTS.CRM.SEND_OTP, {
           amount,
           otp_type,
-          mt5_id: "",
-          mt5_receiverid: "",
+          mt5_id,
+          mt5_receiverid,
         });
 
         const data = res?.data?.data;
@@ -89,7 +90,7 @@ export function useSendOtp(): UseSendOtpReturn {
   const resetOtp = useCallback(() => {
     clearTimer();
     setOtpStatus("idle");
-    setOtpSentOnce(false); // ✅ manually reset — form submit ke baad call karo
+    setOtpSentOnce(false);
     setOtpMessage("");
     setOtpError("");
   }, [clearTimer]);

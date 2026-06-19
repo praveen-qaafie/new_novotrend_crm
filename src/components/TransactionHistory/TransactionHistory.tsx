@@ -36,8 +36,16 @@ const parseDate = (dateStr: string): Date | null => {
 };
 
 //  AllRows — inline component
-
-const AllRows = ({ rows }: { rows: Transaction[] }) => (
+// currentPage aur rowsPerPage props pass
+const AllRows = ({
+  rows,
+  currentPage,
+  rowsPerPage,
+}: {
+  rows: Transaction[];
+  currentPage: number;
+  rowsPerPage: number;
+}) => (
   <>
     {rows.length === 0 ? (
       <tr>
@@ -51,7 +59,8 @@ const AllRows = ({ rows }: { rows: Transaction[] }) => (
           key={t.id}
           className="divide-x text-center transition hover:bg-blue-50/50 dark:hover:bg-gray-800/50"
         >
-          <td className="px-4 py-3">{i + 1}</td>
+          {/* Page offset added */}
+          <td className="px-4 py-3">{(currentPage - 1) * rowsPerPage + i + 1}</td>
           <td className="px-4 py-3 whitespace-nowrap">{t.date}</td>
           <td className="px-4 py-3">{t.details ?? "-"}</td>
           <td className="px-4 py-3">{t.credit}</td>
@@ -62,7 +71,6 @@ const AllRows = ({ rows }: { rows: Transaction[] }) => (
     )}
   </>
 );
-
 // Main Component
 export default function TransactionHistory() {
   const { data, status, errorMessage, fetchData } = useTransactionHistory();
@@ -343,13 +351,29 @@ export default function TransactionHistory() {
                 </td>
               </tr>
             ) : activeTab === "All" ? (
-              <AllRows rows={currentRows} />
+              // <AllRows rows={currentRows} />
+              <AllRows rows={currentRows} currentPage={currentPage} rowsPerPage={rowsPerPage} />
             ) : activeTab === "Deposit" ? (
-              <DepositTable rows={currentRows} />
+              // <DepositTable rows={currentRows} />
+              <DepositTable
+                rows={currentRows}
+                currentPage={currentPage}
+                rowsPerPage={rowsPerPage}
+              />
             ) : activeTab === "Withdraw" ? (
-              <WithdrawTable rows={currentRows} />
+              // <WithdrawTable rows={currentRows} />
+              <WithdrawTable
+                rows={currentRows}
+                currentPage={currentPage}
+                rowsPerPage={rowsPerPage}
+              />
             ) : (
-              <TransferTable rows={currentRows} />
+              // <TransferTable rows={currentRows} />
+              <TransferTable
+                rows={currentRows}
+                currentPage={currentPage}
+                rowsPerPage={rowsPerPage}
+              />
             )}
           </tbody>
         </table>

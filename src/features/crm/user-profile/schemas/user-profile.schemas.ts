@@ -1,31 +1,12 @@
 import { z } from "zod";
 
-// export const ekycSchema = z.object({
-//   doc_type: z.string().min(1, "Please select POI document type"),
-//   doc_number: z.string().optional(),
-//   doc_type2: z.string().min(1, "Please select POA document type"),
-//   doc_number2: z.string().optional(),
-// });
-
-// export type EkycFormData = z.infer<typeof ekycSchema>;
-
 export const kycSchema = z.object({
   doc_type: z.string().min(1, "Please select a POI document type"),
-  // doc_type2: z.string().min(1, "Please select a POA document type"),
   doc_type2: z.string().min(1, "Please select POA document type"),
 });
 export type KycFormData = z.infer<typeof kycSchema>;
 
 // user profile schemas
-
-// export const profileSchema = z.object({
-//   first_name: z.string().min(1, "First name is required"),
-//   last_name: z.string().min(1, "Last name is required"),
-//   dob: z.string().min(1, "Date of birth is required"),
-//   bio: z.string().optional(),
-// });
-
-// export type ProfileFormData = z.infer<typeof profileSchema>;
 
 export const profileSchema = z.object({
   first_name: z
@@ -43,18 +24,6 @@ export const profileSchema = z.object({
     .min(10, "Phone must be 10 digits")
     .max(12, "Phone must be 12 digits")
     .regex(/^[0-9]+$/, "Only numbers allowed"),
-  // bio: z.string().max(300, "Bio must be under 300 characters").optional(),
-  // bio: z.string().trim().max(300, "Bio must be under 300 characters").optional(),
-  // bio: z.string().trim().max(300, "Bio must be under 300 characters").optional().or(z.literal("")),
-  // bio: z
-  //   .string()
-  //   .trim()
-  //   .max(300, "Bio must be under 300 characters")
-  //   .transform((val) => (val === "" ? undefined : val))
-  //   .optional(),
-  // bio: z.string().optional(),
-  // bio: z.string().max(300, "Bio must be under 300 characters").optional().or(z.literal("")),
-  // bio: z.string().max(300, "Bio must be under 300 characters").optional(),
   bio: z.union([
     z.string().max(300, "Bio must be under 300 characters"),
     z.literal(""),

@@ -102,10 +102,23 @@ export default function AccountSwitchTabs() {
   }, [reset, resetOtp]);
 
   // Send OTP
+  // const handleSendOtp = useCallback(async () => {
+  //   if (!amount || parseFloat(amount) <= 0) return;
+  //   await sendOtp({ amount, otp_type: OTP_TYPE_MAP[activeTab] });
+  // }, [amount, activeTab, sendOtp]);
+
   const handleSendOtp = useCallback(async () => {
     if (!amount || parseFloat(amount) <= 0) return;
-    await sendOtp({ amount, otp_type: OTP_TYPE_MAP[activeTab] });
-  }, [amount, activeTab, sendOtp]);
+
+    await sendOtp({
+      amount,
+      otp_type: OTP_TYPE_MAP[activeTab],
+      mt5_id:
+        activeTab === "MT5ToMT5" ? fromAccount : activeTab === "MT5ToWallet" ? fromAccount : "", // WalletToMT5 — wallet se hai, mt5_id empty
+      mt5_receiverid:
+        activeTab === "MT5ToMT5" ? toAccount : activeTab === "WalletToMT5" ? toAccount : "", // MT5ToWallet — wallet to hai, receiverid empty
+    });
+  }, [amount, activeTab, fromAccount, toAccount, sendOtp]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

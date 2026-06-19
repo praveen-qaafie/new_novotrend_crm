@@ -68,6 +68,8 @@ function calcProfileCompletion(data: {
   const filled = fields.filter(Boolean).length;
   const profilePercent = Math.round((filled / fields.length) * 100);
 
+  // console.log("dd-01", data.bio);
+
   return data.kycStatus?.toLowerCase() === "approved" ? 100 : Math.min(profilePercent, 90);
 }
 
@@ -135,7 +137,7 @@ const UserProfile = () => {
       first_name: "",
       last_name: "",
       phone: "",
-      bio: undefined, // FIX 1: bio is optional, stays undefined by default
+      bio: "",
       dob: "",
       country: "",
     },
@@ -175,33 +177,79 @@ const UserProfile = () => {
   const profileHasChanges = isProfileDirty || profileImage !== null;
 
   // Profile Completion
-  const completionPercent = calcProfileCompletion({
-    first_name: watchedProfile.first_name,
-    last_name: watchedProfile.last_name,
-    phone: watchedProfile.phone,
-    dob: watchedProfile.dob,
-    bio: watchedProfile.bio,
-    country: watchedProfile.country,
-    user_img: profilePreview,
-    kycStatus: status,
-  });
+  // const completionPercent = calcProfileCompletion({
+  //   first_name: watchedProfile.first_name,
+  //   last_name: watchedProfile.last_name,
+  //   phone: watchedProfile.phone,
+  //   dob: watchedProfile.dob,
+  //   bio: watchedProfile.bio,
+  //   country: watchedProfile.country,
+  //   user_img: profilePreview,
+  //   kycStatus: status,
+  // });
+
+  const completionPercent = kycLoading
+    ? 0
+    : calcProfileCompletion({
+        first_name: watchedProfile.first_name,
+        last_name: watchedProfile.last_name,
+        phone: watchedProfile.phone,
+        dob: watchedProfile.dob,
+        country: watchedProfile.country,
+        user_img: profilePreview,
+        kycStatus: status,
+      });
 
   // Populate profile form from API
+  // useEffect(() => {
+  //   if (profileData) {
+  //     resetProfile({
+  //       first_name: profileData.first_name ?? "",
+  //       last_name: profileData.last_name ?? "",
+  //       phone: profileData.user_mobile ?? "",
+  //       // bio: profileData.user_bio ?? "",
+  //       // bio: profileData.user_bio || undefined,
+  //       bio: profileData.user_bio || "",
+  //       dob: profileData.birthdate ?? "",
+  //       country: profileData.user_country ?? "",
+  //     });
+  //     setProfilePreview(profileData.user_img ?? "");
+
+  //     const [dd, mm, yyyy] = profileData.birthdate.split("-").map(Number);
+  //     setStartDate(new Date(yyyy, mm - 1, dd));
+
+  //     if (profileData.user_country) {
+  //       setSelectedCountry({
+  //         country_code: profileData.user_country,
+  //         country_name: profileData.contryname ?? profileData.user_country,
+  //       } as Country);
+  //     }
+  //   }
+  // }, [profileData, resetProfile]);
+
   useEffect(() => {
     if (profileData) {
       resetProfile({
         first_name: profileData.first_name ?? "",
         last_name: profileData.last_name ?? "",
         phone: profileData.user_mobile ?? "",
-        // bio: profileData.user_bio ?? "",
-        bio: profileData.user_bio || undefined,
+        bio: profileData.user_bio || "",
         dob: profileData.birthdate ?? "",
         country: profileData.user_country ?? "",
       });
+
       setProfilePreview(profileData.user_img ?? "");
 
-      const [dd, mm, yyyy] = profileData.birthdate.split("-").map(Number);
-      setStartDate(new Date(yyyy, mm - 1, dd));
+      if (profileData.birthdate && profileData.birthdate.trim() !== "") {
+        const parts = profileData.birthdate.split("-").map(Number);
+        if (parts.length === 3 && parts.every((n) => !isNaN(n) && n > 0)) {
+          const [dd, mm, yyyy] = parts;
+          const parsed = new Date(yyyy, mm - 1, dd);
+          if (!isNaN(parsed.getTime())) {
+            setStartDate(parsed);
+          }
+        }
+      }
 
       if (profileData.user_country) {
         setSelectedCountry({
@@ -438,12 +486,13 @@ const UserProfile = () => {
                     </h3>
                     <div className="mt-2 h-2 w-full rounded-full bg-gray-200">
                       <div
-                        className="h-2 rounded-full bg-[#465FFF] transition-all duration-500"
-                        style={{ width: `${completionPercent}%` }}
+                        className="h-2 rounded-full bg-[#465FFF] transition-all duration-700"
+                        style={{ width: kycLoading ? "0%" : `${completionPercent}%` }}
                       />
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">{completionPercent}% completed</p>
-                    {completionPercent < 100 && <ul></ul>}
+                    <p className="mt-1 text-sm text-gray-500">
+                      {kycLoading ? "Calculating..." : `${completionPercent}% completed`}
+                    </p>
                   </div>
                   <div>
                     <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-200">

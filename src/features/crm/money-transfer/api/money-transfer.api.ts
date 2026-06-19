@@ -29,7 +29,7 @@ export async function submitTransferApi(
   payload: MT5ToWalletRequest | WalletToMT5Request | MT5ToMT5Request,
   tab: TransferTab
 ): Promise<TransferApiResponse> {
-  // console.log("payload-API", payload); 
+  console.log("payload-API", payload); 
   const endpoint = TRANSFER_ENDPOINT_MAP[tab];
   const res = await api.post<{ data: TransferApiResponse }>(endpoint, payload);
   return res.data.data;

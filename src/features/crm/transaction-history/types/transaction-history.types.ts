@@ -69,6 +69,8 @@ export interface Transaction {
   amount?: number;
   to?: string;
   status?: string;
+  // currentPage?: number;
+  // rowsPerPage?: number;
 }
 
 // Hook state

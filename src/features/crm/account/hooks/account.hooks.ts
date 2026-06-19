@@ -94,6 +94,7 @@ export function useOpenAccount() {
 
       if (isSuccess) {
         queryClient.invalidateQueries({ queryKey: ["accList"] });
+        queryClient.invalidateQueries({ queryKey: ["mt5Accounts"] });
       }
     },
     onError: () => {

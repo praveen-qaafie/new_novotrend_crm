@@ -11,8 +11,9 @@ import {
 } from "@/features/crm/team-support/hooks/team-support.hooks";
 import type { ChatMessage } from "@/features/crm/team-support/types/team-support.types";
 
-// Motion variants
+import InitialsAvatar from "../ui/avtar/InitialsAvatarChat";
 
+// Motion variants
 const msgVariants: Variants = {
   hiddenLeft: { opacity: 0, x: -20 },
   hiddenRight: { opacity: 0, x: 20 },
@@ -20,7 +21,6 @@ const msgVariants: Variants = {
 };
 
 // Helpers
-
 function getTime(dateStr: string): string {
   if (!dateStr) return "";
   const parts = dateStr.split(" ");
@@ -32,7 +32,6 @@ function isImageUrl(url: string): boolean {
 }
 
 // Component
-
 export default function SupportChat() {
   const router = useRouter();
   const params = useParams();
@@ -84,7 +83,6 @@ export default function SupportChat() {
   const isClosed = ticketDetails?.s_status === "Closed";
   const isSending = submitRemark.isPending;
 
-  // old code: details_list.slice().reverse() — latest message at bottom
   const chatMessages: ChatMessage[] = ticketDetails?.details_list?.slice().reverse() ?? [];
 
   const sendError = submitRemark.isError
@@ -94,7 +92,6 @@ export default function SupportChat() {
       : "";
 
   // Render
-
   return (
     <div className="flex h-screen flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50 transition dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
@@ -243,9 +240,6 @@ export default function SupportChat() {
           chatMessages.map((msg: ChatMessage, idx: number) => {
             const isUser = msg.chatstatus === "UserChat";
             const time = getTime(msg.s_date);
-            const avatar = isUser
-              ? msg.s_file_name || "/images/user/customer.png"
-              : msg.user_img || "/images/user/customer.png";
 
             return (
               <motion.div
@@ -256,15 +250,7 @@ export default function SupportChat() {
                 className={`flex items-end gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
               >
                 {/* Avatar — left for admin */}
-                {!isUser && (
-                  <Image
-                    src={avatar}
-                    alt="avatar"
-                    width={34}
-                    height={34}
-                    className="shrink-0 rounded-full border border-gray-200 object-cover shadow-sm"
-                  />
-                )}
+                {!isUser && <InitialsAvatar name={msg.user_name ?? "Admin"} size={34} />}
 
                 <div
                   className={`flex max-w-xs flex-col md:max-w-md ${isUser ? "items-end" : "items-start"}`}
@@ -318,15 +304,7 @@ export default function SupportChat() {
                 </div>
 
                 {/* Avatar — right for user */}
-                {isUser && (
-                  <Image
-                    src={avatar}
-                    alt="avatar"
-                    width={34}
-                    height={34}
-                    className="shrink-0 rounded-full border border-gray-200 object-cover shadow-sm"
-                  />
-                )}
+                {isUser && <InitialsAvatar name={msg.user_name ?? "You"} size={34} />}
               </motion.div>
             );
           })

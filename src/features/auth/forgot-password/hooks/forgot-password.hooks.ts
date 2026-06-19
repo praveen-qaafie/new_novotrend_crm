@@ -13,7 +13,7 @@ export function useForgotPassword() {
     onSuccess: (data) => {
       const responseData = data?.data?.data;
       if (responseData?.status == 200) {
-        console.log("responseData?.status === 200", responseData?.status === 200)
+        // console.log("responseData?.status === 200", responseData?.status === 200)
         setMessage({
           type: "success",
           text: responseData?.result || "Reset link sent successfully.",

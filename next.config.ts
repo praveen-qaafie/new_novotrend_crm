@@ -31,6 +31,15 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "ntapi.novotrend.co",
       },
+      {
+        protocol: "https",
+        hostname: "mynewadmin.novotrend.co",
+      },
+
+      {
+        protocol: "https",
+        hostname: "**.novotrend.co",
+      },
     ],
   },
 

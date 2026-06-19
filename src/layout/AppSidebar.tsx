@@ -41,6 +41,7 @@ type NavItem = {
 interface AppSidebarProps {
   isIB: number | string;
   onBecomePartnerClick?: () => void;
+  isIBLoading?: boolean;
 }
 
 /* PARTNER MENU */
@@ -77,7 +78,11 @@ const partnerMenu: NavItem[] = [
   },
 ];
 
-const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) => {
+const AppSidebar: React.FC<AppSidebarProps> = ({
+  isIB,
+  onBecomePartnerClick,
+  isIBLoading = false,
+}) => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
 
   const pathname = usePathname();
@@ -148,15 +153,26 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isIB, onBecomePartnerClick }) =
         },
       ],
     },
-    ...(Number(isIB) === 0
-      ? [
-          {
-            icon: <FaUserGroup size={20} />,
-            name: "Become A Partner",
-            action: "OPEN_PARTNER_MODAL",
-          } as NavItem,
-        ]
-      : []),
+    // ...(Number(isIB) === 0
+    //   ? [
+    //       {
+    //         icon: <FaUserGroup size={20} />,
+    //         name: "Become A Partner",
+    //         action: "OPEN_PARTNER_MODAL",
+    //       } as NavItem,
+    //     ]
+    //   : []),
+    ...(isIBLoading
+      ? [] // loading me kuch nahi dikhao
+      : Number(isIB) === 0
+        ? [
+            {
+              icon: <FaUserGroup size={20} />,
+              name: "Become A Partner",
+              action: "OPEN_PARTNER_MODAL",
+            } as NavItem,
+          ]
+        : []),
   ];
 
   const role: "user" | "partner" = pathname.startsWith("/partners") ? "partner" : "user";
