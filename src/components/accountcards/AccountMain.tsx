@@ -38,8 +38,6 @@ export default function AccountMain() {
       sortOrder === "Newest" ? b.accno.localeCompare(a.accno) : a.accno.localeCompare(b.accno)
     );
 
-  // console.log("filteredAccounts", filteredAccounts);
-
   const toggleExpand = (id: string) => {
     setExpanded((prev) => (prev === id ? null : id));
   };
