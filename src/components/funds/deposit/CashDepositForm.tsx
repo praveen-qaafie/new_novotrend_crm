@@ -9,6 +9,7 @@ import type { Account } from "@/common/types/account";
 import FormMessage from "@/common/UI/FormMessage";
 import { useCashDeposit } from "@/features/crm/funds/deposit-funds/hooks/deposit-funds.hooks";
 import { cashDepositSchema } from "@/features/crm/funds/deposit-funds/schemas/deposit-funds.schemas";
+import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
 interface CashDepositFormProps {
   onBack: () => void;
@@ -30,6 +31,7 @@ interface FormErrors {
 
 export default function CashDepositForm({ onBack }: CashDepositFormProps) {
   const { mutate: addCashDeposit, isPending, message, setMessage } = useCashDeposit();
+  const { user } = useUserBalanceData();
 
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -178,7 +180,7 @@ export default function CashDepositForm({ onBack }: CashDepositFormProps) {
       {/* Wallet Balance & Options */}
       <div className="mb-6 flex flex-col justify-between gap-3 text-sm sm:flex-row">
         <p className="text-slate-700 dark:text-slate-300">
-          <span className="font-semibold">Current Wallet Balance:</span> $3.00
+          <span className="font-semibold">Current Wallet Balance:</span> $ {user?.balance}
         </p>
 
         <div className="flex gap-3">

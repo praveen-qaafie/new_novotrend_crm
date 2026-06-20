@@ -22,7 +22,7 @@ export const EcommerceMetrics = () => {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          backgroundAttachment: "scroll", // or "fixed" if you want a parallax effect
+          backgroundAttachment: "scroll",
           borderRadius: "12px",
         }}
       >

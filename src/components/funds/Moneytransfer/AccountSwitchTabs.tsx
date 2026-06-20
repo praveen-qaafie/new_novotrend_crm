@@ -109,14 +109,16 @@ export default function AccountSwitchTabs() {
 
   const handleSendOtp = useCallback(async () => {
     if (!amount || parseFloat(amount) <= 0) return;
-
     await sendOtp({
       amount,
       otp_type: OTP_TYPE_MAP[activeTab],
       mt5_id:
-        activeTab === "MT5ToMT5" ? fromAccount : activeTab === "MT5ToWallet" ? fromAccount : "", // WalletToMT5 — wallet se hai, mt5_id empty
-      mt5_receiverid:
-        activeTab === "MT5ToMT5" ? toAccount : activeTab === "WalletToMT5" ? toAccount : "", // MT5ToWallet — wallet to hai, receiverid empty
+        activeTab === "MT5ToMT5"
+          ? fromAccount
+          : activeTab === "MT5ToWallet"
+            ? fromAccount
+            : toAccount,
+      mt5_receiverid: activeTab === "MT5ToMT5" ? toAccount : "",
     });
   }, [amount, activeTab, fromAccount, toAccount, sendOtp]);
 
@@ -426,9 +428,7 @@ export default function AccountSwitchTabs() {
                     <Loader2 className="h-4 w-4 animate-spin" /> Sending...
                   </>
                 ) : isOtpSent ? (
-                  <>
-                    <CheckCircle2 className="h-4 w-4" /> OTP Sent
-                  </>
+                  <>OTP Sent</>
                 ) : (
                   <>
                     <KeyRound className="h-4 w-4" /> Send OTP

@@ -9,6 +9,7 @@ import { useDepositFundsAddWalletBalance } from "@/features/crm/funds/deposit-fu
 import type { Account } from "@/common/types/account";
 import { depositFundsSchema } from "@/features/crm/funds/deposit-funds/schemas/deposit-funds.schemas";
 import FormMessage from "@/common/UI/FormMessage";
+import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
 interface BankDepositFormProps {
   onBack: () => void;
@@ -30,6 +31,7 @@ interface FormErrors {
 
 export default function BankDepositForm({ onBack }: BankDepositFormProps) {
   const { bankDetails, isLoading } = useGetBankDetails();
+  const { user } = useUserBalanceData();
   const { mutate: depositFunds, isPending, message } = useDepositFundsAddWalletBalance();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
@@ -162,7 +164,7 @@ export default function BankDepositForm({ onBack }: BankDepositFormProps) {
       {/* Wallet & Method */}
       <div className="mb-6 space-y-3 text-sm sm:flex sm:items-center sm:justify-between sm:space-y-0">
         <p className="text-slate-700 dark:text-slate-300">
-          <span className="font-semibold">Current Wallet Balance:</span> $3.00
+          <span className="font-semibold">Current Wallet Balance:</span> $ {user?.balance}
         </p>
 
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">

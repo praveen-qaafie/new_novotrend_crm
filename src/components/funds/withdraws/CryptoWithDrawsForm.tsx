@@ -8,6 +8,7 @@ import { useSendOtp } from "@/hooks/useSendOtp";
 import { useCryptoWithdraw } from "@/features/crm/funds/withdraw-funds/hooks/withdraw-funds.hooks";
 import { cryptoWithdrawSchema } from "@/features/crm/funds/withdraw-funds/schemas/withdraw-funds.schemas";
 import { WithdrawCryptoChain } from "@/features/crm/funds/withdraw-funds/types/withdraw-funds.types";
+import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
 interface CryptoWithdrawsFormProps {
   onBack: () => void;
@@ -23,6 +24,7 @@ const CHAINS: { value: WithdrawCryptoChain; label: string; icon: string }[] = [
 
 export default function CryptoWithDrawsForm({ onBack }: CryptoWithdrawsFormProps) {
   const { otpStatus, otpSentOnce, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+  const { user } = useUserBalanceData();
   const { withdrawStatus, errorMessage, successMessage, submitWithdraw, reset } =
     useCryptoWithdraw();
 
@@ -123,7 +125,7 @@ export default function CryptoWithDrawsForm({ onBack }: CryptoWithdrawsFormProps
       {/* Wallet info row */}
       <div className="mb-6 flex flex-col justify-between gap-3 text-sm sm:flex-row">
         <p className="text-slate-700 dark:text-slate-300">
-          <span className="font-semibold">Current Wallet Balance:</span> $3.00
+          <span className="font-semibold">Current Wallet Balance:</span> $ {user?.balance}
         </p>
         <div className="flex gap-3">
           <div>
@@ -255,7 +257,7 @@ export default function CryptoWithDrawsForm({ onBack }: CryptoWithdrawsFormProps
             <button
               type="button"
               onClick={handleSendOtp}
-              // ✅ FIX 2: otpSentOnce se block karo re-send
+              //  FIX 2: otpSentOnce se block karo re-send
               disabled={!amount || parseFloat(amount) <= 0 || isOtpSending || otpSentOnce}
               className="flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
@@ -266,7 +268,7 @@ export default function CryptoWithDrawsForm({ onBack }: CryptoWithdrawsFormProps
               ) : otpSentOnce ? (
                 // otpSentOnce
                 <>
-                  <CheckCircle2 className="h-4 w-4" /> OTP Sent ✓
+                  <CheckCircle2 className="h-4 w-4" /> OTP Sent 
                 </>
               ) : (
                 <>

@@ -289,11 +289,16 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
                 </Link>
               )
             ) : null}
-
             {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
               <div
                 ref={(el) => {
                   subMenuRefs.current[index] = el;
+                  if (el && el.scrollHeight !== subMenuHeight[index]) {
+                    setSubMenuHeight((prev) => ({
+                      ...prev,
+                      [index]: el.scrollHeight,
+                    }));
+                  }
                 }}
                 className="overflow-hidden transition-all duration-300"
                 style={{

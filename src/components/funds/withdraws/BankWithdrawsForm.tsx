@@ -9,6 +9,7 @@ import { useGetUserBankDetails } from "@/features/crm/funds/add-bank-account/hoo
 import { useBankWithdraw } from "@/features/crm/funds/withdraw-funds/hooks/withdraw-funds.hooks";
 import { useSendOtp } from "@/hooks/useSendOtp";
 import { bankWithdrawSchema } from "@/features/crm/funds/withdraw-funds/schemas/withdraw-funds.schemas";
+import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
 interface BankWithdrawsFormProps {
   onBack: () => void;
@@ -20,6 +21,7 @@ const OTP_TYPE = "withdraw_bank_otp";
 export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
   const router = useRouter();
   const { bankDetails, isLoading } = useGetUserBankDetails();
+  const { user } = useUserBalanceData();
   const hasBankDetails = bankDetails && Object.keys(bankDetails).length > 0;
 
   const { status, errorMessage, successMessage, submitWithdraw, reset } = useBankWithdraw();
@@ -142,7 +144,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
       {/* Payment method row */}
       <div className="mb-6 flex flex-col justify-between gap-3 text-sm sm:flex-row">
         <p className="text-slate-700 dark:text-slate-300">
-          <span className="font-semibold">Current Wallet Balance:</span> $3.00
+          <span className="font-semibold">Current Wallet Balance:</span> $ {user?.balance}
         </p>
         <div className="flex gap-3">
           <div>
@@ -284,7 +286,7 @@ export default function BankWithdrawsForm({ onBack }: BankWithdrawsFormProps) {
               <>
                 <KeyRound className="h-4 w-4" />
                 {/* otpSentOnce label */}
-                {otpSentOnce ? "OTP Sent ✓" : "Send OTP"}
+                {otpSentOnce ? "OTP Sent " : "Send OTP"}
               </>
             )}
           </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import commissionimg from "../../../public/images/grid-image/commissionbank1.jpg";
+import commissionimg from "../../../public/images/grid-image/comission1.png";
 import React, { useState } from "react";
 import { X } from "lucide-react";
 

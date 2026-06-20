@@ -7,6 +7,7 @@ import type { Account } from "@/common/types/account";
 import { useSendOtp } from "@/hooks/useSendOtp";
 import { useCashWithdraw } from "@/features/crm/funds/withdraw-funds/hooks/withdraw-funds.hooks";
 import { cashWithdrawSchema } from "@/features/crm/funds/withdraw-funds/schemas/withdraw-funds.schemas";
+import { useUserBalanceData } from "@/features/crm/dashboard/hooks/dashboard.hooks";
 
 interface CashWithdrawsFormProps {
   onBack: () => void;
@@ -15,6 +16,7 @@ interface CashWithdrawsFormProps {
 
 export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
   const { otpStatus, otpSentOnce, otpMessage, otpError, sendOtp, resetOtp } = useSendOtp();
+  const { user } = useUserBalanceData();
   const { withdrawStatus, errorMessage, successMessage, submitWithdraw, reset } = useCashWithdraw();
 
   const [amount, setAmount] = useState("");
@@ -104,7 +106,7 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
       {/* Payment meta */}
       <div className="mb-6 flex flex-col justify-between gap-3 text-sm sm:flex-row">
         <p className="text-slate-700 dark:text-slate-300">
-          <span className="font-semibold">Current Wallet Balance:</span> $3.00
+          <span className="font-semibold">Current Wallet Balance:</span> $ {user?.balance}
         </p>
         <div className="flex gap-3">
           <div>
@@ -236,7 +238,7 @@ export default function CashWithDrawsForm({ onBack }: CashWithdrawsFormProps) {
               ) : otpSentOnce ? (
                 // otpSentOnce label
                 <>
-                  <CheckCircle2 className="h-4 w-4" /> OTP Sent ✓
+                  <CheckCircle2 className="h-4 w-4" /> OTP Sent 
                 </>
               ) : (
                 <>

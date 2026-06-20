@@ -6,13 +6,13 @@ import { useState, useCallback, useRef } from "react";
 interface SendOtpParams {
   amount: string;
   otp_type: string;
-  mt5_id?: string; // ✅ optional
-  mt5_receiverid?: string; // ✅ optional
+  mt5_id?: string; // optional
+  mt5_receiverid?: string; // optional
 }
 
 interface UseSendOtpReturn {
   otpStatus: OtpStatus;
-  otpSentOnce: boolean; // ✅ new
+  otpSentOnce: boolean; // new
   otpMessage: string;
   otpError: string;
   sendOtp: (params: SendOtpParams) => Promise<void>;
@@ -26,7 +26,7 @@ const DISMISS_DURATION = {
 
 export function useSendOtp(): UseSendOtpReturn {
   const [otpStatus, setOtpStatus] = useState<OtpStatus>("idle");
-  const [otpSentOnce, setOtpSentOnce] = useState(false); // ✅ new
+  const [otpSentOnce, setOtpSentOnce] = useState(false); // new
   const [otpMessage, setOtpMessage] = useState("");
   const [otpError, setOtpError] = useState("");
 
@@ -62,7 +62,7 @@ export function useSendOtp(): UseSendOtpReturn {
         const res = await api.post(API_ENDPOINTS.CRM.SEND_OTP, {
           amount,
           otp_type,
-          mt5_id,
+          mt5_id, // here
           mt5_receiverid,
         });
 
@@ -70,7 +70,7 @@ export function useSendOtp(): UseSendOtpReturn {
 
         if (data?.status === 200) {
           setOtpStatus("sent");
-          setOtpSentOnce(true); // ✅ ek baar set, timer se reset nahi hoga
+          setOtpSentOnce(true);
           setOtpMessage(data?.result || "OTP sent successfully!");
           scheduleReset("success");
         } else {
